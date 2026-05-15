@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="glow" cx="44%" cy="46%" r="64%">
+      <stop offset="0" stop-color="#b6ff49" stop-opacity=".62"/>
+      <stop offset=".46" stop-color="#6ab62f" stop-opacity=".34"/>
+      <stop offset=".72" stop-color="#172313" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#020403" stop-opacity="1"/>
+    </radialGradient>
+    <pattern id="mesh" width="34" height="22" patternUnits="userSpaceOnUse">
+      <path d="M-8 11Q0 0 8 11T24 11T40 11" fill="none" stroke="#c8ff5f" stroke-width="2.1" stroke-linecap="round"/>
+      <path d="M-8 15Q0 4 8 15T24 15T40 15" fill="none" stroke="#0c1108" stroke-width="2.8" stroke-linecap="round" opacity=".82"/>
+    </pattern>
+    <filter id="roughen">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncA type="table" tableValues="0 .22"/>
+      </feComponentTransfer>
+    </filter>
+    <mask id="falloff">
+      <rect width="1280" height="720" fill="url(#glow)"/>
+    </mask>
+  </defs>
+  <rect width="1280" height="720" fill="#020302"/>
+  <g mask="url(#falloff)">
+    <g transform="translate(-50 40) skewX(-13) scale(1.22 .96)">
+      <rect width="1160" height="620" fill="url(#mesh)" opacity=".94"/>
+    </g>
+    <g transform="translate(650 -30) skewX(16) scale(.82 1.08)">
+      <rect width="860" height="700" fill="url(#mesh)" opacity=".48"/>
+    </g>
+  </g>
+  <rect width="1280" height="720" fill="url(#glow)" opacity=".5" style="mix-blend-mode:screen"/>
+  <rect width="1280" height="720" filter="url(#roughen)" opacity=".34"/>
+  <rect width="1280" height="720" fill="#000" opacity=".2"/>
+</svg>

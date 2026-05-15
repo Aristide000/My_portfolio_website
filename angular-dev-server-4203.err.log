@@ -1,0 +1,21 @@
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'setupAboutWorkTab' does not exist on type 'HeroComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/user-list/hero.component.ts:82:11:
+[37m      82 │       this.[32msetupAboutWorkTab[37m();
+         ╵            [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'setupAboutQualityCarousel' does not exist on type 'HeroComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/user-list/hero.component.ts:83:11:
+[37m      83 │       this.[32msetupAboutQualityCarousel[37m();
+         ╵            [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'setupAboutQualityCarousel' does not exist on type 'HeroComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/user-list/hero.component.ts:83:11:
+[37m      83 │       this.[32msetupAboutQualityCarousel[37m();
+         ╵            [32m~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m

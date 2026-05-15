@@ -1,0 +1,30 @@
+:root {
+  --ui-scrollbar-size: 10px;
+  --ui-scrollbar-active: rgba(255, 176, 0, 0.62);
+  --ui-scrollbar-active-hover: rgba(255, 176, 0, 0.86);
+}
+
+body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-scrollbar-active) transparent;
+}
+
+body::-webkit-scrollbar {
+  width: var(--ui-scrollbar-size);
+  height: var(--ui-scrollbar-size);
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--ui-scrollbar-active);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ui-scrollbar-active-hover);
+}

@@ -1,117 +1,488 @@
-<section class="hero">
+﻿<div class="landing-loader" aria-hidden="true">
+  <div class="landing-loader-text">
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Hello</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Bonjour</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>&#2360;&#2381;&#2357;&#2366;&#2327;&#2340;&#2350;</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Ciao</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Ol&aacute;</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>&#12371;&#12435;&#12395;&#12385;&#12399;</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Hall&aring;</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Guten Tag</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>Hallo</h2>
+    </div>
+    <div class="landing-welcome-text">
+      <div class="landing-dot"></div>
+      <h2>&#2488;&#2509;&#2476;&#2494;&#2455;&#2468;&#2478;</h2>
+    </div>
+  </div>
+  <div class="landing-loader-caption">.Coded by Iraguha Aristide</div>
+  <div class="landing-loader-round">
+    <div class="landing-loader-curve"></div>
+  </div>
+</div>
 
-  <!-- AMBIENT BACKGROUND -->
+<div class="page-canvas">
   <div class="hero-bg">
     <span class="bg-blob blob-1"></span>
     <span class="bg-blob blob-2"></span>
     <span class="bg-blob blob-3"></span>
   </div>
 
-  <!-- NAVBAR -->
-  <nav class="hero-nav">
-    <div class="logo">
-      <span class="logo-main">IRAGUHA</span>
-      <span class="logo-sub">Aristide</span>
-    </div>
+  <section class="hero" id="home">
+    <nav class="hero-nav">
+      <div class="logo">
+        <img src="/aristide-logo.png" alt="Iraguha Aristide logo" class="logo-image">
+      </div>
 
-    <ul class="nav-links">
-      <li><a href="#" class="nav-link active" data-section="home">Home</a></li>
-      <li><a href="#about" class="nav-link" data-section="about">About</a></li>
-      <li><a href="#work" class="nav-link" data-section="work">Work</a></li>
-      <li><a href="#contact" class="nav-link" data-section="contact">Contact</a></li>
-    </ul>
-  </nav>
+      <ul class="nav-links nav-links--center">
+        <li><a href="#home" class="nav-link active" data-section="home">Home</a></li>
+        <li><a href="#about" class="nav-link" data-section="about">About</a></li>
+        <li><a href="#work" class="nav-link" data-section="work">Work</a></li>
+      </ul>
 
-  <!-- LEFT -->
-  <div class="hero-content">
-    <h1 class="hero-name">
-      IRAGUHA<br />
-      ARISTIDE<br />
+      <div class="contact-expander nav-contact">
+        <div class="contact-links" id="contact-social-links" aria-label="Social media links" aria-hidden="true">
+          <a href="mailto:hello@iraguhaaristide.com" class="contact-link" aria-label="Email Aristide" tabindex="-1">Mail</a>
+          <a href="https://github.com/" class="contact-link" target="_blank" rel="noreferrer" aria-label="GitHub" tabindex="-1">GH</a>
+          <a href="https://www.linkedin.com/" class="contact-link" target="_blank" rel="noreferrer" aria-label="LinkedIn" tabindex="-1">In</a>
+          <a href="https://www.instagram.com/" class="contact-link" target="_blank" rel="noreferrer" aria-label="Instagram" tabindex="-1">IG</a>
+        </div>
+
+        <button
+          type="button"
+          class="nav-cta contact-toggle"
+          aria-expanded="false"
+          aria-controls="contact-social-links"
+        >
+          Get in touch
+        </button>
+      </div>
+    </nav>
+
+    <div class="hero-content">
+      <h1 class="hero-name">Hi, I'm <span class="hero-name-accent">Aristide</span></h1>
+
+      <p class="hero-professions">
+        I work across
+        <span class="profession-rotator" aria-live="polite">
+          <span>scriptwriter</span>
+          <span>developer</span>
+          <span>web developer</span>
+        </span>
+      </p>
+
       <span class="hero-portfolio">
-        <span class="portfolio-text">Portfolio</span>
+        <span class="solari-board" aria-label="Portfolio split flap display"></span>
       </span>
-    </h1>
+    </div>
 
-    <p class="hero-line">
-      I design and build digital experiences<br />
-      that feel human.
-    </p>
-  </div>
-
-  <!-- RIGHT -->
-  <div class="hero-notice">
-    <p class="notice-line">
-      I design and engineer digital products where clarity,
-      usability, and emotion meet with intention.
-    </p>
-    <p class="notice-line">
-      My work lives at the intersection of design thinking,
-      modern web technologies, and human-centered systems.
-    </p>
-    <p class="notice-line">
-      This portfolio is a curated selection of that work —
-      crafted, tested, and refined with purpose.
-    </p>
-  </div>
-
-  <!-- SCROLL HINT -->
-  <div class="scroll-hint">
-    <span class="scroll-text">Scroll to explore</span>
-    <div class="scroll-line"></div>
-  </div>
-
-</section>
-
-<!-- ================= SECTION 2 ================= -->
-<!-- TRANSITION SEPARATOR: visual "doorway" between sections -->
-<div class="section-separator" aria-hidden="true"></div>
-
-<section class="philosophy" id="about">
-  <div class="philosophy-header">
-    <div class="eyebrow">More About Me</div>
-    <h2 class="philosophy-title">Selected philosophy &amp; approach</h2>
-  </div>
-
-  <div class="philosophy-inner">
-
-    <div class="philosophy-item card card-1">
-      <div class="card-bg"></div>
-      <div class="card-number">1</div>
-      <div class="card-content">
-        <h2>Design with intent</h2>
-        <p>
-          Every interface begins with clarity — understanding the user,
-          the problem, and the context before visuals.
-        </p>
+    <div class="notes-widget">
+      <button type="button" class="notes-widget-toggle" aria-label="Show notes">Notes</button>
+      <div class="notes-widget-panel">
+        <div class="notice-card-container">
+          <div class="notice-card">
+            <p class="notice-text">I design and engineer digital products where clarity, usability, and emotion meet with intention.</p>
+          </div>
+          <div class="notice-card">
+            <p class="notice-text">My work lives at the intersection of design thinking, modern web technologies, and human-centered systems.</p>
+          </div>
+          <div class="notice-card">
+            <p class="notice-text">This portfolio is a curated selection of that work - crafted, tested, and refined with purpose.</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="philosophy-item card card-2">
-      <div class="card-bg"></div>
-      <div class="card-number">2</div>
-      <div class="card-content">
-        <h2>Engineering experience</h2>
-        <p>
-          I build scalable, performance-focused systems using modern
-          web technologies and thoughtful architecture.
-        </p>
+    <button type="button" class="scroll-hint" aria-label="Scroll to about section" (click)="scrollToNextSection()">
+      <span class="scroll-text">Scroll to explore</span>
+      <div class="scroll-line"></div>
+    </button>
+
+    <div class="hero-local-time" aria-label="Local time">
+      <div class="flight-cell">
+        <div class="fl-label">Local Time</div>
+        <div class="fl-value local-time-value">--:--:--</div>
       </div>
     </div>
+  </section>
 
-    <div class="philosophy-item card card-3">
-      <div class="card-bg"></div>
-      <div class="card-number">3</div>
-      <div class="card-content">
-        <h2>Craft over noise</h2>
-        <p>
-          No trends. No excess. Just work refined through purpose,
-          testing, and restraint.
-        </p>
+  <section class="about-section" id="about" aria-label="About">
+    <div class="about-reveal-box">
+      <div class="about-box-label">
+        <div class="about-box-label-inner">
+          <span class="about-title-word" aria-label="ABOUT THE DEVELOPER">
+            <span class="about-title-letter" aria-hidden="true">A</span>
+            <span class="about-title-letter" aria-hidden="true">B</span>
+            <span class="about-title-letter" aria-hidden="true">O</span>
+            <span class="about-title-letter" aria-hidden="true">U</span>
+            <span class="about-title-letter" aria-hidden="true">T</span>
+            <span class="about-title-letter about-title-space" aria-hidden="true">&nbsp;</span>
+            <span class="about-title-letter" aria-hidden="true">T</span>
+            <span class="about-title-letter" aria-hidden="true">H</span>
+            <span class="about-title-letter" aria-hidden="true">E</span>
+            <span class="about-title-letter about-title-space" aria-hidden="true">&nbsp;</span>
+            <span class="about-title-letter" aria-hidden="true">D</span>
+            <span class="about-title-letter" aria-hidden="true">E</span>
+            <span class="about-title-letter" aria-hidden="true">V</span>
+            <span class="about-title-letter" aria-hidden="true">E</span>
+            <span class="about-title-letter" aria-hidden="true">L</span>
+            <span class="about-title-letter" aria-hidden="true">O</span>
+            <span class="about-title-letter" aria-hidden="true">P</span>
+            <span class="about-title-letter" aria-hidden="true">E</span>
+            <span class="about-title-letter" aria-hidden="true">R</span>
+          </span>
+          <span class="about-title-welcome">welcome</span>
+        </div>
+      </div>
+      <div class="about-reveal-content">
+        <div class="about-color-catcher" aria-hidden="true"></div>
+        <div class="about-editorial">
+          <section class="about-editorial-hero">
+            <span class="about-editorial-brand">IRAGUHA</span>
+            <div class="about-editorial-intro">
+              <h2 class="about-editorial-headline">I Create Digital Experiences that Connect<br>Brands with People</h2>
+              <p class="about-editorial-subtitle">Independent Front-end Engineer<br>Based in Rwanda</p>
+            </div>
+            <div class="about-quality-carousel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Project quality cards">
+              <div class="about-quality-wheel">
+                <article class="about-quality-card">
+                  <span class="about-quality-badge">01</span>
+                  <h3>Performance</h3>
+                  <p>
+                    I care not only about how a site looks, but also about how it performs,
+                    scales, and feels for real users.
+                  </p>
+                </article>
+
+                <article class="about-quality-card">
+                  <span class="about-quality-badge">02</span>
+                  <h3>Responsive Layouts</h3>
+                  <p>
+                    Interfaces are built to adapt cleanly across screens, with layouts that
+                    feel intentional instead of squeezed into place.
+                  </p>
+                </article>
+
+                <article class="about-quality-card">
+                  <span class="about-quality-badge">03</span>
+                  <h3>Clean Code</h3>
+                  <p>
+                    I keep front-end structure readable, reusable, and practical, so projects
+                    stay easier to improve after launch.
+                  </p>
+                </article>
+
+                <article class="about-quality-card">
+                  <span class="about-quality-badge">04</span>
+                  <h3>SEO Foundations</h3>
+                  <p>
+                    Pages are shaped with semantic markup, fast loading, and search-ready
+                    details that support long-term visibility.
+                  </p>
+                </article>
+
+                <article class="about-quality-card">
+                  <span class="about-quality-badge">05</span>
+                  <h3>Long-Term Quality</h3>
+                  <p>
+                    Every project is built with attention to detail, steady polish, and the
+                    real people who will use it in mind.
+                  </p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="about-detail-sections" aria-label="About the developer details">
+            <div class="about-detail-header">
+              <span class="about-detail-eyebrow">About Me</span>
+              <h2>Front-end craft with a clear human pulse.</h2>
+              <p>
+                I shape portfolio sites, landing pages, and web interfaces where the layout,
+                motion, copy, and code all support one calm user journey.
+              </p>
+            </div>
+
+            <article class="about-detail-card about-detail-card--intro">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Intro</span>
+                <h3>Who I Am</h3>
+                <p>
+                  I&rsquo;m Aristide Iraguha, an independent front-end engineer based in Rwanda.
+                  I build responsive, performance-focused websites that help brands connect with
+                  real people.
+                </p>
+              </div>
+              <span class="about-detail-tag">Rwanda / Remote</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-1"
+                aria-label="Expand Who I Am"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-1" aria-hidden="true">
+                <p>
+                  I like projects where clarity, speed, and personality work together without
+                  making the experience feel heavy.
+                </p>
+              </div>
+            </article>
+
+            <article class="about-detail-card">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Focus</span>
+                <h3>What I Build</h3>
+                <p>
+                  I work on modern interfaces, responsive layouts, user-friendly flows, and
+                  websites that feel fast, clear, and easy to use on every device.
+                </p>
+              </div>
+              <span class="about-detail-tag">Interface Systems</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-2"
+                aria-label="Expand What I Build"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-2" aria-hidden="true">
+                <p>
+                  The goal is to make each interface easy to understand first, then give it the
+                  visual polish that makes it memorable.
+                </p>
+              </div>
+            </article>
+
+            <article class="about-detail-card">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Process</span>
+                <h3>How I Work</h3>
+                <p>
+                  I begin with the goal, map the structure, build the interface, and refine the
+                  experience until the details feel deliberate.
+                </p>
+              </div>
+              <span class="about-detail-tag">Plan / Build / Refine</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-3"
+                aria-label="Expand How I Work"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-3" aria-hidden="true">
+                <p>
+                  I keep checking spacing, motion, responsiveness, and content flow so the final
+                  result feels considered from desktop to mobile.
+                </p>
+              </div>
+            </article>
+
+            <article class="about-detail-card about-detail-card--values">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Values</span>
+                <h3>What I Care About</h3>
+                <div class="about-value-list" aria-label="Core values">
+                  <span>Performance</span>
+                  <span>Clean design</span>
+                  <span>Accessibility</span>
+                  <span>Responsive layouts</span>
+                  <span>Long-term quality</span>
+                  <span>Clear communication</span>
+                </div>
+              </div>
+              <span class="about-detail-tag">Quality Standards</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-4"
+                aria-label="Expand What I Care About"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-4" aria-hidden="true">
+                <p>
+                  These values guide both the visible page and the technical decisions underneath
+                  it.
+                </p>
+              </div>
+            </article>
+
+            <article class="about-detail-card">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Stack</span>
+                <h3>Tools I Use</h3>
+                <p>
+                  HTML, CSS, JavaScript, TypeScript, Angular, React, Tailwind CSS, APIs, and
+                  modern front-end tooling.
+                </p>
+              </div>
+              <span class="about-detail-tag">Angular + UI</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-5"
+                aria-label="Expand Tools I Use"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-5" aria-hidden="true">
+                <p>
+                  I choose tools around the project goal, keeping the code practical and easier to
+                  improve after launch.
+                </p>
+              </div>
+            </article>
+
+            <article class="about-detail-card">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Mindset</span>
+                <h3>Why I Enjoy It</h3>
+                <p>
+                  I enjoy turning ideas into simple, useful digital products and improving how
+                  people move through websites.
+                </p>
+              </div>
+              <span class="about-detail-tag">Human Details</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-6"
+                aria-label="Expand Why I Enjoy It"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-6" aria-hidden="true">
+                <p>
+                  Small improvements matter to me because they can change how confident and
+                  comfortable a real user feels.
+                </p>
+              </div>
+            </article>
+
+            <article class="about-detail-card about-detail-card--cta">
+              <div class="about-detail-copy">
+                <span class="about-detail-kicker">Contact</span>
+                <h3>Let&rsquo;s Build</h3>
+                <p>
+                  Whether it&rsquo;s a personal brand, business website, landing page, or web
+                  application, I&rsquo;m open to helping bring thoughtful digital ideas to life.
+                </p>
+              </div>
+              <span class="about-detail-tag">Available for Work</span>
+              <button
+                class="about-detail-expand"
+                type="button"
+                aria-expanded="false"
+                aria-controls="about-detail-extra-7"
+                aria-label="Expand Let us Build"
+              >
+                <span aria-hidden="true"></span>
+              </button>
+              <div class="about-detail-extra" id="about-detail-extra-7" aria-hidden="true">
+                <p>
+                  When the idea is ready to move from rough concept to working product, that is
+                  where I can help.
+                </p>
+              </div>
+            </article>
+          </section>
+
+          <div class="about-focus-widget is-collapsed">
+            <button
+              class="about-work-tab"
+              type="button"
+              aria-expanded="false"
+              aria-controls="about-focus-grid"
+            >
+              <span class="about-work-tab-text">Work</span>
+            </button>
+
+            <section class="about-editorial-mini-grid" id="about-focus-grid" aria-label="Creative focus areas" aria-hidden="true">
+              <section class="about-editorial-panel about-editorial-panel--design">
+                <h2>UI Design</h2>
+                <button class="about-panel-expand" type="button" aria-expanded="false" aria-controls="about-panel-ui-design">
+                  <span>Expand</span>
+                  <span class="about-panel-expand-indicator" aria-hidden="true"></span>
+                </button>
+                <p class="about-panel-info" id="about-panel-ui-design" aria-hidden="true">
+                  Interfaces shaped around clarity, hierarchy, motion, and visual rhythm.
+                </p>
+              </section>
+
+              <section class="about-editorial-panel about-editorial-panel--development">
+                <h2>Web Development</h2>
+                <button class="about-panel-expand" type="button" aria-expanded="false" aria-controls="about-panel-web-development">
+                  <span>Expand</span>
+                  <span class="about-panel-expand-indicator" aria-hidden="true"></span>
+                </button>
+                <p class="about-panel-info" id="about-panel-web-development" aria-hidden="true">
+                  Front-end builds with responsive structure, interaction, and performance in mind.
+                </p>
+              </section>
+
+              <section class="about-editorial-panel about-editorial-panel--music">
+                <h2>Music Production</h2>
+                <button class="about-panel-expand" type="button" aria-expanded="false" aria-controls="about-panel-music-production">
+                  <span>Expand</span>
+                  <span class="about-panel-expand-indicator" aria-hidden="true"></span>
+                </button>
+                <p class="about-panel-info" id="about-panel-music-production" aria-hidden="true">
+                  Sound ideas built through mood, texture, pacing, and arrangement.
+                </p>
+              </section>
+
+              <section class="about-editorial-panel about-editorial-panel--art">
+                <h2>Art</h2>
+                <button class="about-panel-expand" type="button" aria-expanded="false" aria-controls="about-panel-art">
+                  <span>Expand</span>
+                  <span class="about-panel-expand-indicator" aria-hidden="true"></span>
+                </button>
+                <p class="about-panel-info" id="about-panel-art" aria-hidden="true">
+                  Visual experiments where contrast, composition, and feeling lead.
+                </p>
+              </section>
+            </section>
+
+          </div>
+        </div>
       </div>
     </div>
-
-  </div>
-  
-</section>
-
-
+  </section>
+</div>
