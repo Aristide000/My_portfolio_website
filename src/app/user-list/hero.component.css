@@ -240,10 +240,7 @@
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition:
-    background 240ms ease,
-    backdrop-filter 240ms ease,
-    -webkit-backdrop-filter 240ms ease;
+  transition: background var(--motion-fast, 240ms) var(--motion-enter-ease, ease);
   pointer-events: none;
 }
 
@@ -583,22 +580,17 @@
   inset: 0;
   background: rgba(0, 0, 0, 0);
   opacity: 0;
-  backdrop-filter: blur(0);
-  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   pointer-events: auto;
-  will-change: opacity, backdrop-filter;
   transition:
     opacity 0.18s ease-out,
-    background 0.18s ease-out,
-    backdrop-filter 0.2s cubic-bezier(0.22, 1, 0.36, 1),
-    -webkit-backdrop-filter 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    background 0.18s ease-out;
 }
 
 .contact-popup.is-open .contact-popup-backdrop {
   background: rgba(3, 3, 3, 0.74);
   opacity: 1;
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
 }
 
 .contact-popup-links {
@@ -801,9 +793,10 @@
   font-family: 'Outfit', sans-serif;
   margin-top: 0;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  gap: 4px;
   font-size: 9px;
+  line-height: 10px;
   letter-spacing: 4px;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
@@ -811,19 +804,18 @@
 }
 
 .profession-rotator {
-  display: inline-block;
+  display: inline-grid;
   position: relative;
-  width: 126px;
+  width: max-content;
   height: 10px;
   line-height: 10px;
-  margin-left: 8px;
+  margin-left: 0;
   overflow: hidden;
 }
 
 .profession-rotator span {
-  position: absolute;
-  left: 0;
-  top: 0;
+  position: static;
+  grid-area: 1 / 1;
   opacity: 0;
   transform: translateY(8px);
   color: #b97f22;
@@ -843,6 +835,37 @@
 
 .profession-rotator span:nth-child(3) {
   animation: rotator 3s linear infinite 2s;
+}
+
+.profession-rotator span,
+.scroll-line,
+.about-section-tab::before,
+.about-title-option,
+.about-connect-button {
+  animation-play-state: paused;
+}
+
+.hero.is-motion-active :is(.profession-rotator span, .scroll-line),
+.about-section.is-motion-active .about-section-tab::before,
+.about-section.is-motion-active :is(.about-title-option, .about-connect-button) {
+  animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profession-rotator span,
+  .scroll-line,
+  .about-section-tab::before {
+    animation: none !important;
+  }
+
+  .profession-rotator span {
+    opacity: 0;
+    transform: none;
+  }
+
+  .profession-rotator span:first-child {
+    opacity: 1;
+  }
 }
 
 .hero-portfolio {
@@ -923,7 +946,6 @@
   box-shadow:
     0 11px 28px rgba(0, 0, 0, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px);
   font-family: 'Outfit', sans-serif;
   font-size: 10px;
   font-weight: 600;
@@ -951,9 +973,8 @@
   padding: 12px;
   overflow: hidden;
   border-radius: 999px;
-  background: rgba(18, 18, 19, 0.94);
+  background: #121213;
   border: 1px solid rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(18px);
   box-shadow:
     0 24px 60px rgba(0, 0, 0, 0.38),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -1916,7 +1937,7 @@
   display: inline-block;
   max-width: 100%;
   transform-origin: left bottom;
-  will-change: opacity, transform, filter, clip-path;
+  will-change: opacity, transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -3152,13 +3173,11 @@ button.site-scroll-text-reveal {
     0 1px 0 rgba(255, 255, 255, 0.55),
     0 18px 46px rgba(0, 0, 0, 0.14);
   transform-origin: 50% 100%;
-  will-change: clip-path, transform, opacity;
 }
 
 .about-title-letter {
   position: relative;
   display: inline-block;
-  will-change: transform, opacity, filter;
 }
 
 .about-title-space {
@@ -3290,7 +3309,6 @@ button.site-scroll-text-reveal {
   width: max-content;
   max-width: 7em;
   opacity: 0;
-  filter: blur(14px);
   transform: translate3d(0, 0.18em, 0) scale(0.86, 1.14);
   transform-origin: left center;
   animation: aboutTitleCycle 12s ease-in-out infinite;
@@ -3319,21 +3337,18 @@ button.site-scroll-text-reveal {
 @keyframes aboutTitleCycle {
   0% {
     opacity: 0;
-    filter: blur(14px);
     transform: translate3d(0, 0.18em, 0) scale(0.86, 1.14);
   }
 
   5%,
   16% {
     opacity: 1;
-    filter: blur(0);
     transform: translate3d(0, 0, 0);
   }
 
   22%,
   100% {
     opacity: 0;
-    filter: blur(14px);
     transform: translate3d(0, -0.12em, 0) scale(1.12, 0.9);
   }
 }
@@ -4346,12 +4361,13 @@ button.site-scroll-text-reveal {
   }
 
   .hero-professions {
-    gap: 7px;
+    gap: 3px;
     font-size: 8px;
+    line-height: 10px;
     letter-spacing: 3px;
   }
 
-  .profession-rotator { width: 118px; margin-left: 0; }
+  .profession-rotator { width: max-content; margin-left: 0; }
 
   .notes-widget {
     top: calc(100svh - 102px);
@@ -4458,7 +4474,6 @@ button.site-scroll-text-reveal {
   letter-spacing: -0.015em;
   text-align: center;
   text-wrap: balance;
-  will-change: transform, opacity, filter;
 }
 
 .work-services-scroll-note {
@@ -4551,7 +4566,6 @@ button.site-scroll-text-reveal {
   z-index: 3;
   width: max-content;
   padding: 0;
-  will-change: transform, opacity;
 }
 
 .work-experience-pills {
@@ -4621,7 +4635,6 @@ button.site-scroll-text-reveal {
   height: auto;
   border-left: 1px dashed rgba(255, 255, 255, 0.45);
   transform-origin: center top;
-  will-change: transform;
 }
 
 .work-experience-card {
@@ -4640,7 +4653,6 @@ button.site-scroll-text-reveal {
     0 20px 54px rgba(0, 0, 0, 0.52),
     0 0 0 1px rgba(255, 255, 255, 0.1);
   transform: translateX(-50%);
-  will-change: transform, opacity;
 }
 
 .work-experience-card-visual {

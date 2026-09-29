@@ -38,13 +38,38 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
   private readonly ngZone = inject(NgZone);
 
   private readonly solariTarget = 'PORTFOLIO';
-  private readonly solariIntroWords = ['WELCOME', 'TO', 'MY', 'PORTFOLIO'];
   private readonly solariChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   private readonly solariGlitchChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%*+!?';
   private readonly solariFlipMs = 105;
-  private readonly solariMisfireChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#*?';
   private readonly themeStorageKey = 'aristide-portfolio-theme';
-  private readonly motionEase = 'expo.inOut';
+  private readonly motion = {
+    duration: {
+      fast  : 0.24,
+      normal: 0.52,
+      reveal: 0.76,
+      slow  : 0.9,
+    },
+    ease: {
+      enter : 'power4.out',
+      move  : 'power3.inOut',
+      exit  : 'power2.in',
+      scroll: 'power3.inOut',
+    },
+    stagger: {
+      tight : 0.035,
+      normal: 0.06,
+    },
+    distance: {
+      reveal: 24,
+      hero  : 36,
+      card  : 44,
+    },
+    scrub: {
+      work  : 0.65,
+      reveal: 0.45,
+    },
+  } as const;
+  private readonly motionEase = this.motion.ease.scroll;
 
   private get solariFlipTotal(): number {
     return this.solariFlipMs * 2 + 25;
@@ -68,6 +93,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
   private aboutTextRevealReady = false;
   private aboutTextRevealPlayed = false;
   private pageScrollTween: gsap.core.Tween | null = null;
+  private scrollRefreshFrame: number | null = null;
 
   private triggerMobileNotesAnimation: (() => void) | null = null;
 
@@ -78,6 +104,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
       this.setupMotionChoreography();
       this.applyPerformanceClasses();
+      this.setupSectionMotionVisibility();
       this.setupSolariBoard();
       this.setupLocalTime();
       this.setupBackgroundInstrumentation();
@@ -109,6 +136,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     this.animations = [];
     try { this.pageScrollTween?.kill(); } catch (_) {}
     this.pageScrollTween = null;
+    if (this.scrollRefreshFrame !== null) {
+      window.cancelAnimationFrame(this.scrollRefreshFrame);
+      this.scrollRefreshFrame = null;
+    }
 
     this.cleanupFns.forEach((fn) => {
       try { fn(); } catch (_) {}
@@ -124,8 +155,35 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
   private setupMotionChoreography(): void {
     gsap.defaults({
-      ease: this.motionEase,
+      ease: this.motion.ease.enter,
       overwrite: 'auto',
+    });
+  }
+
+  private setupSectionMotionVisibility(): void {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(
+      '.hero, .about-section, .work-horizontal-section, .skills-runway-section, .contact-section'
+    ));
+    if (sections.length === 0) return;
+
+    if (typeof IntersectionObserver === 'undefined') {
+      sections.forEach((section) => section.classList.add('is-motion-active'));
+      return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle('is-motion-active', entry.isIntersecting);
+      });
+    }, {
+      rootMargin: '18% 0px',
+      threshold: 0.01,
+    });
+
+    sections.forEach((section) => observer.observe(section));
+    this.cleanupFns.push(() => {
+      observer.disconnect();
+      sections.forEach((section) => section.classList.remove('is-motion-active'));
     });
   }
 
@@ -583,12 +641,18 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       });
     }
 
+    let aboutResizeFrame: number | null = null;
     const onResize = (): void => {
-      setPlatformState(revealed);
-      updateAboutStoryScroll();
-      updateAboutProgress();
-      updateAboutPlatformTheme();
-      this.refreshScrollTextReveals();
+      if (aboutResizeFrame !== null) return;
+
+      aboutResizeFrame = window.requestAnimationFrame(() => {
+        aboutResizeFrame = null;
+        setPlatformState(revealed);
+        updateAboutStoryScroll();
+        updateAboutProgress();
+        updateAboutPlatformTheme();
+        this.refreshScrollTextReveals();
+      });
     };
 
     const setPanelFullscreen = (nextFullScreen: boolean): void => {
@@ -743,6 +807,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     this.cleanupFns.push(() => {
       revealObserver.disconnect();
       window.removeEventListener('resize', onResize);
+      if (aboutResizeFrame !== null) window.cancelAnimationFrame(aboutResizeFrame);
       window.removeEventListener('about-more:close', onAboutMoreCloseRequest as EventListener);
       if (toggle) toggle.removeEventListener('click', onTogglePanel);
       if (moreButton) moreButton.removeEventListener('click', onMoreExpand);
@@ -1357,8 +1422,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
     gsap.set(scrollyLines, {
       autoAlpha: reducedMotion ? 1 : 0,
-      y: reducedMotion ? 0 : 22,
-      filter: reducedMotion ? 'none' : 'blur(6px)',
+      y: reducedMotion ? 0 : this.motion.distance.reveal,
     });
     if (servicesIndex) gsap.set(servicesIndex, { autoAlpha: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : -16 });
     if (scrollNote) gsap.set(scrollNote, { autoAlpha: reducedMotion ? 0.42 : 0, y: reducedMotion ? 0 : 8 });
@@ -1367,7 +1431,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     gsap.set(experienceBranches, { scaleY: reducedMotion ? 1 : 0 });
     gsap.set(experienceCards, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 18 });
     if (processHeading) gsap.set(processHeading, { autoAlpha: reducedMotion ? 1 : 0, x: reducedMotion ? 0 : -30 });
-    gsap.set(techStackCards, { autoAlpha: reducedMotion ? 1 : 0, yPercent: reducedMotion ? 0 : 115 });
+    gsap.set(techStackCards, {
+      autoAlpha: reducedMotion ? 1 : 0,
+      y: reducedMotion ? 0 : this.motion.distance.card,
+    });
     gsap.set(techStackMarquees, { autoAlpha: reducedMotion ? 1 : 0, y: reducedMotion ? 0 : 16 });
 
     let processCardsRevealed = reducedMotion;
@@ -1380,10 +1447,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         })
           .to(techStackCards, {
             autoAlpha: 1,
-            yPercent : 0,
-            duration : 0.74,
-            stagger  : 0.11,
-            ease     : 'expo.out',
+            y         : 0,
+            duration  : this.motion.duration.reveal,
+            stagger   : this.motion.stagger.normal,
+            ease      : this.motion.ease.enter,
           }, 0)
           .to(techStackMarquees, {
             autoAlpha: 1,
@@ -1399,7 +1466,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
       processCardsRevealed = false;
       processRevealTimeline?.pause(0);
-      gsap.set(techStackCards, { autoAlpha: 0, yPercent: 115 });
+      gsap.set(techStackCards, { autoAlpha: 0, y: this.motion.distance.card });
       gsap.set(techStackMarquees, { autoAlpha: 0, y: 16 });
     };
 
@@ -1410,16 +1477,19 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       processRevealTimeline?.restart();
     };
 
+    let processLayerActive = false;
     const timeline = this.track(gsap.timeline({
       scrollTrigger: {
         id                 : 'work-horizontal-scroll',
         trigger            : section,
         start              : 'top top',
-        end                : () => `+=${Math.max(window.innerWidth * (reducedMotion ? 2.8 : 5.8), 2600)}`,
+        end                : () => {
+          const screenCount = reducedMotion ? 2.8 : window.innerWidth <= 760 ? 4.4 : 5;
+          return `+=${Math.max(window.innerWidth * screenCount, 2600)}`;
+        },
         pin                : true,
-        scrub              : reducedMotion || this.perfLite ? true : 0.4,
+        scrub              : reducedMotion ? true : this.perfLite ? 0.35 : this.motion.scrub.work,
         anticipatePin      : 1,
-        fastScrollEnd      : true,
         invalidateOnRefresh: true,
         onUpdate           : (self) => {
           const currentX = Math.abs(Number(gsap.getProperty(track, 'x')) || 0);
@@ -1430,10 +1500,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
           const processResetX = Math.max(0, processRevealX - Math.max(window.innerWidth * 0.24, 220));
           const isProcessActive = self.isActive && currentX >= processRevealX;
 
-          section.classList.toggle(
-            'is-process-active',
-            isProcessActive
-          );
+          if (isProcessActive !== processLayerActive) {
+            processLayerActive = isProcessActive;
+            section.classList.toggle('is-process-active', isProcessActive);
+          }
 
           if (isProcessActive) {
             revealProcessCards();
@@ -1447,8 +1517,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     timeline
       .to(title, {
         autoAlpha: 0,
-        scale    : 0.88,
-        filter   : reducedMotion ? 'none' : 'blur(10px)',
+        scale    : 0.94,
         duration : reducedMotion ? 0.08 : 0.24,
         ease     : 'power2.in',
       }, 0.02)
@@ -1477,7 +1546,6 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
           timeline.to(previousLine, {
             autoAlpha: 0,
             y        : -18,
-            filter   : 'blur(6px)',
             duration : 0.16,
             ease     : 'power2.in',
           }, beatTime);
@@ -1486,7 +1554,6 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         timeline.to(line, {
           autoAlpha: 1,
           y        : 0,
-          filter   : 'blur(0px)',
           duration : 0.22,
           ease     : 'power2.out',
         }, beatTime);
@@ -1549,22 +1616,20 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
           title,
           {
             autoAlpha: 0,
-            y        : 90,
-            scale    : 0.84,
-            filter   : 'blur(12px)',
+            y        : this.motion.distance.card,
+            scale    : 0.94,
           },
           {
             autoAlpha: 1,
             y        : 0,
             scale    : 1,
-            filter   : 'blur(0px)',
             ease     : 'none',
             scrollTrigger: {
               id     : 'work-title-reveal',
               trigger: section,
               start  : 'top 82%',
               end    : 'top 46%',
-              scrub  : reducedMotion || this.perfLite ? true : 0.3,
+              scrub  : reducedMotion ? true : this.perfLite ? 0.25 : this.motion.scrub.reveal,
             },
           }
         ))
@@ -2042,7 +2107,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       ease: this.motionEase,
       scrollTo: {
         y: targetY,
-        autoKill: false,
+        autoKill: true,
       },
       onComplete: () => {
         pageCanvas?.classList.remove('is-section-transitioning');
@@ -2056,10 +2121,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
   }
 
   private getPageScrollDuration(distance: number): number {
-    if (this.perfLite) return 0.72;
+    if (this.perfLite) return this.motion.duration.normal;
 
     const viewportRatio = distance / Math.max(window.innerHeight, 1);
-    return gsap.utils.clamp(0.86, 1.46, 0.78 + viewportRatio * 0.2);
+    return gsap.utils.clamp(0.58, 1.05, 0.52 + viewportRatio * 0.14);
   }
 
   // ---------------------------------------------------------------------------
@@ -2094,7 +2159,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       (element): element is HTMLElement => element !== null
     );
 
-    gsap.set(title, { autoAlpha: 0, y: 16, filter: 'blur(7px)' });
+    gsap.set(title, { autoAlpha: 0, y: 16 });
     gsap.set(supportingTitle, { autoAlpha: 0, y: 7 });
     gsap.set(years, { autoAlpha: 0, y: 6 });
     gsap.set(names, { autoAlpha: 0, x: -10 });
@@ -2115,7 +2180,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         id: 'skills-runway-reveal',
         trigger: section,
         start: 'top 78%',
-        toggleActions: 'play none none reverse',
+        once: true,
       },
     });
 
@@ -2123,9 +2188,8 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       .to(title, {
         autoAlpha: 1,
         y: 0,
-        filter: 'blur(0px)',
-        duration: 0.3,
-        ease: 'power3.out',
+        duration: this.motion.duration.normal,
+        ease: this.motion.ease.enter,
       })
       .to(supportingTitle, {
         autoAlpha: 1,
@@ -2205,7 +2269,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         id: 'contact-section-reveal',
         trigger: section,
         start: 'top 78%',
-        toggleActions: 'play none none reverse',
+        once: true,
       },
     });
 
@@ -2353,18 +2417,14 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         element,
         {
           autoAlpha: 0,
-          y        : 24,
-          filter   : 'blur(8px)',
-          clipPath : 'inset(0% 0% 115% 0%)',
+          y        : this.motion.distance.reveal,
         },
         {
           autoAlpha: 1,
           y        : 0,
-          filter   : 'blur(0px)',
-          clipPath : 'inset(-6% -2% -8% -2%)',
-          duration : 0.78,
+          duration : this.motion.duration.reveal,
           delay,
-          ease     : 'power3.out',
+          ease     : this.motion.ease.enter,
           overwrite: 'auto',
           ...(isAboutRevealText
             ? { paused: true }
@@ -2424,8 +2484,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
   private refreshScrollTextReveals(): void {
     if (this.isDestroyed || this.prefersReducedMotion()) return;
+    if (this.scrollRefreshFrame !== null) return;
 
-    window.requestAnimationFrame(() => {
+    this.scrollRefreshFrame = window.requestAnimationFrame(() => {
+      this.scrollRefreshFrame = null;
       if (this.isDestroyed) return;
       try { ScrollTrigger.refresh(); } catch (_) {}
     });
@@ -2877,7 +2939,6 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     if (this.heroAnimationsStarted) return;
     this.heroAnimationsStarted = true;
     this.animateHero();
-    this.animateBackground();
   }
 
   private playLandingLoader(): Promise<void> {
@@ -2981,7 +3042,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       return cursor;
     };
 
-    const targetMorphSeconds = 3;
+    const targetMorphSeconds = 1.9;
     const projectedMorphDuration = projectMorphDuration(speed);
     const effectiveSpeed = projectedMorphDuration > 0
       ? speed * (targetMorphSeconds / projectedMorphDuration)
@@ -3020,7 +3081,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         })
       );
 
-      let morphStart = 0.72 * speed;
+      let morphStart = 0.42 * speed;
       const getGreetingPace = (index: number): number => getPaceForSpeed(index, effectiveSpeed);
 
       textStates.forEach((state, index) => {
@@ -3088,20 +3149,20 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       });
 
       timeline
-        .call(() => loader.classList.add('is-exiting'), undefined, `+=${0.28 * speed}`)
-        .to(loaderText, { y: -44, autoAlpha: 0, duration: 0.34 * speed, ease: 'power3.inOut', force3D: false })
+        .call(() => loader.classList.add('is-exiting'), undefined, `+=${0.18 * speed}`)
+        .to(loaderText, { y: -32, autoAlpha: 0, duration: 0.28 * speed, ease: this.motion.ease.move, force3D: false })
         .call(() => { if (this.isDestroyed) return; this.startHeroAnimations(); })
-        .to(loader, { yPercent: -110, duration: 0.86 * speed, ease: 'expo.inOut', force3D: true }, '-=0.08');
+        .to(loader, { yPercent: -110, duration: 0.64 * speed, ease: this.motion.ease.move, force3D: true }, '-=0.06');
     });
   }
 
   private animateHero(): void {
-    const baseDuration = this.perfLite ? 0.74 : 1;
-    const tl = this.track(gsap.timeline({ defaults: { ease: 'power3.out' } }));
+    const baseDuration = this.perfLite ? 0.78 : 1;
+    const tl = this.track(gsap.timeline({ defaults: { ease: this.motion.ease.enter } }));
 
-    tl.from('.hero-nav',       { y: -20, autoAlpha: 0, duration: 0.8  * baseDuration })
-      .from('.hero-name',      { y: 48,  autoAlpha: 0, duration: 1.05 * baseDuration }, '-=0.28')
-      .from('.hero-professions',{ y: 20, autoAlpha: 0, duration: 0.82 * baseDuration }, '-=0.68')
+    tl.from('.hero-nav',       { y: -16, autoAlpha: 0, duration: this.motion.duration.reveal * baseDuration })
+      .from('.hero-name',      { y: this.motion.distance.hero, autoAlpha: 0, duration: this.motion.duration.slow * baseDuration }, '-=0.26')
+      .from('.hero-professions',{ y: 18, autoAlpha: 0, duration: this.motion.duration.reveal * baseDuration }, '-=0.58')
       .fromTo(
         '.solari-tile',
         { autoAlpha: 0, rotateX: 90 },
@@ -3109,21 +3170,18 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
           autoAlpha      : 1,
           rotateX        : 0,
           duration       : this.perfLite ? 0.42 : 0.5,
-          stagger        : this.perfLite ? 0.06 : 0.08,
+          stagger        : this.perfLite ? 0.04 : 0.05,
           ease           : 'power4.out',
           transformOrigin: 'center center',
         },
         '+=0.02'
       )
-      .call(() => {
-        if (this.prefersReducedMotion()) { this.showSolariTarget(); return; }
-        this.queueSolariTimer(() => this.playSolariIntroSequence(), 0);
-      })
+      .call(() => this.showSolariTarget())
       .from('.hero-meta', { y: 8, autoAlpha: 0, duration: 0.56 * baseDuration }, '-=0.18')
       .fromTo(
         '.notes-widget',
-        { x: 26, autoAlpha: 0 },
-        { x: 0, autoAlpha: 1, duration: 0.9 * baseDuration },
+        { x: this.motion.distance.reveal, autoAlpha: 0 },
+        { x: 0, autoAlpha: 1, duration: this.motion.duration.reveal * baseDuration },
         '-=0.24'
       )
       .call(() => {
@@ -3235,55 +3293,6 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
 
     board.addEventListener('click', onBoardClick);
     this.cleanupFns.push(() => board.removeEventListener('click', onBoardClick));
-    this.setupSolariViewportReplay(board);
-  }
-
-  private setupSolariViewportReplay(board: HTMLElement): void {
-    if (typeof IntersectionObserver === 'undefined') return;
-
-    let hasEnteredView = false;
-    let hasLeftView = false;
-    let replayQueued = false;
-
-    const replayOnReturn = (): void => {
-      replayQueued = false;
-      if (this.isDestroyed || this.solariIntroInProgress) return;
-      if (this.prefersReducedMotion()) {
-        this.showSolariTarget();
-        return;
-      }
-
-      this.replaySolariBoard();
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry) return;
-
-        const isInView = entry.isIntersecting && entry.intersectionRatio >= 0.38;
-
-        if (isInView) {
-          if (hasEnteredView && hasLeftView && !replayQueued) {
-            replayQueued = true;
-            window.requestAnimationFrame(replayOnReturn);
-          }
-
-          hasEnteredView = true;
-          hasLeftView = false;
-          return;
-        }
-
-        if (hasEnteredView) {
-          hasLeftView = true;
-        }
-      },
-      {
-        threshold: [0, 0.38, 0.72],
-      }
-    );
-
-    observer.observe(board);
-    this.cleanupFns.push(() => observer.disconnect());
   }
 
   private getAngularScopeAttribute(element: HTMLElement): string | null {
@@ -3355,124 +3364,6 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     this.solariTarget.split('').forEach((letter, index) => {
       this.runSolariSequence(this.solariTiles[index], letter, 140 + index * 115, runId);
     });
-    this.startSolariMisfireLoop(runId, this.perfLite ? 1800 : 1200);
-  }
-
-  private playSolariIntroSequence(): void {
-    if (!this.solariTiles.length) return;
-    this.solariRunId += 1;
-    this.solariIntroInProgress = true;
-    this.clearSolariTimers();
-    this.resetSolariBoard('.');
-
-    const runId      = this.solariRunId;
-    const tileStagger = this.perfLite ? 42 : 56;
-    const wordHold   = this.perfLite ? 420 : 560;
-    const wordRun    = this.solariFlipTotal + (this.solariTiles.length - 1) * tileStagger;
-    let wordStart    = 90;
-
-    this.solariIntroWords.forEach((word, wordIndex) => {
-      const slots = this.getSolariWordSlots(word);
-      slots.forEach((character, index) => {
-        this.queueSolariTimer(() => {
-          if ((runId !== 0 && runId !== this.solariRunId) || this.isDestroyed) return;
-          this.flipSolariTile(this.solariTiles[index], character, runId);
-        }, wordStart + index * tileStagger);
-      });
-
-      wordStart += wordRun + wordHold;
-
-      if (wordIndex === this.solariIntroWords.length - 1) {
-        this.queueSolariTimer(() => {
-          if ((runId !== 0 && runId !== this.solariRunId) || this.isDestroyed) return;
-          this.solariIntroInProgress = false;
-          this.startSolariMisfireLoop(runId, this.perfLite ? 1700 : 1050);
-        }, wordStart + 120);
-      }
-    });
-  }
-
-  private startSolariMisfireLoop(runId: number, delay?: number): void {
-    if (this.prefersReducedMotion()) return;
-
-    const nextDelay = delay ?? this.getSolariMisfireDelay();
-    this.queueSolariTimer(() => this.playSolariMisfire(runId), nextDelay);
-  }
-
-  private getSolariMisfireDelay(): number {
-    const min = this.perfLite ? 2200 : 1250;
-    const spread = this.perfLite ? 2600 : 2100;
-    return min + Math.floor(Math.random() * spread);
-  }
-
-  private isSolariTargetSettled(): boolean {
-    return this.solariTarget.split('').every((letter, index) => {
-      const tile = this.solariTiles[index];
-      return !!tile && !tile.busy && tile.current === letter && tile.glitchTimer === null;
-    });
-  }
-
-  private getSolariMisfireChar(original: string): string {
-    let character = original;
-    while (character === original) {
-      character = this.solariMisfireChars.charAt(
-        Math.floor(Math.random() * this.solariMisfireChars.length)
-      );
-    }
-    return character;
-  }
-
-  private playSolariMisfire(runId: number): void {
-    if (runId !== this.solariRunId || this.isDestroyed || this.solariIntroInProgress || this.prefersReducedMotion()) {
-      return;
-    }
-
-    if (!this.isSolariTargetSettled()) {
-      this.startSolariMisfireLoop(runId, 220);
-      return;
-    }
-
-    const candidates = this.solariTiles
-      .map((tile, index) => ({ tile, index }))
-      .filter(({ tile, index }) => {
-        const target = this.solariTarget[index];
-        return !!target && !tile.busy && tile.glitchTimer === null && tile.current === target;
-      });
-
-    if (candidates.length === 0) {
-      this.startSolariMisfireLoop(runId);
-      return;
-    }
-
-    const { tile, index } = candidates[Math.floor(Math.random() * candidates.length)];
-    const correctChar = this.solariTarget[index];
-    const wrongChar = this.getSolariMisfireChar(correctChar);
-    const restoreDelay = this.solariFlipTotal + (this.perfLite ? 260 : 170);
-    const settleDelay = restoreDelay + this.solariFlipTotal + (this.perfLite ? 220 : 120);
-
-    tile.el.classList.add('is-misfiring');
-    this.flipSolariTile(tile, wrongChar, runId);
-
-    this.queueSolariTimer(() => {
-      if (runId !== this.solariRunId || this.isDestroyed) return;
-
-      const restore = (): void => {
-        if (runId !== this.solariRunId || this.isDestroyed) return;
-        if (tile.busy) {
-          this.queueSolariTimer(restore, 16);
-          return;
-        }
-        this.flipSolariTile(tile, correctChar, runId);
-      };
-
-      restore();
-    }, restoreDelay);
-
-    this.queueSolariTimer(() => {
-      try { tile.el.classList.remove('is-misfiring'); } catch (_) {}
-      if (runId !== this.solariRunId || this.isDestroyed) return;
-      this.startSolariMisfireLoop(runId);
-    }, settleDelay);
   }
 
   private getSolariWordSlots(word: string, placeholder = '.'): string[] {
@@ -3719,16 +3610,4 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  private animateBackground(): void {
-    if (this.perfLite) {
-      gsap.set('.blob-1', { x: 0, y: 0 });
-      gsap.set('.blob-2', { x: 0, y: 0 });
-      gsap.set('.blob-3', { x: 0, y: 0 });
-      return;
-    }
-
-    this.track(gsap.to('.blob-1', { x: 56,  y: 42,  duration: 36, repeat: -1, yoyo: true, ease: 'sine.inOut' }));
-    this.track(gsap.to('.blob-2', { x: -66, y: 48,  duration: 44, repeat: -1, yoyo: true, ease: 'sine.inOut' }));
-    this.track(gsap.to('.blob-3', { x: 60,  y: -56, duration: 52, repeat: -1, yoyo: true, ease: 'sine.inOut' }));
-  }
 }

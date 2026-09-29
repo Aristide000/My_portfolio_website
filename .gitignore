@@ -31,6 +31,10 @@ yarn-error.log
 # Miscellaneous
 /.env
 /.angular/cache
+.codex-chrome-profile/
+.codex-chrome-shot-profile/
+codex-screenshots/
+codex-ng-serve*.log
 .sass-cache/
 /connect.lock
 /coverage

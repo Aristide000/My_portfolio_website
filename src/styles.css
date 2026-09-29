@@ -29,13 +29,18 @@
   --ui-scrollbar-size: 10px;
   --ui-scrollbar-active: rgba(255, 176, 0, 0.62);
   --ui-scrollbar-active-hover: rgba(255, 176, 0, 0.86);
-  --motion-choreography-ease: cubic-bezier(0.19, 1, 0.22, 1);
-  --motion-choreography-duration: 720ms;
-  --motion-choreography-fast: 420ms;
-  --motion-glide-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-enter-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-move-ease: cubic-bezier(0.65, 0, 0.35, 1);
+  --motion-fast: 240ms;
+  --motion-normal: 520ms;
+  --motion-reveal: 760ms;
+  --motion-choreography-ease: var(--motion-enter-ease);
+  --motion-choreography-duration: var(--motion-reveal);
+  --motion-choreography-fast: var(--motion-normal);
+  --motion-glide-ease: var(--motion-enter-ease);
   --motion-glide-ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --motion-glide-duration: 560ms;
-  --motion-glide-fast: 320ms;
+  --motion-glide-duration: var(--motion-normal);
+  --motion-glide-fast: var(--motion-fast);
   --micro-ease: cubic-bezier(0.2, 0.9, 0.2, 1);
   --micro-fast: 180ms;
   --micro-medium: 520ms;
@@ -69,16 +74,7 @@ body {
 }
 
 body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 2147483647;
-  pointer-events: none;
-  opacity: 0.018;
-  mix-blend-mode: var(--film-grain-blend-mode);
-  background-image: var(--film-grain-texture);
-  background-size: var(--film-grain-size) var(--film-grain-size);
-  background-repeat: repeat;
+  content: none;
 }
 
 body::-webkit-scrollbar {
@@ -224,7 +220,6 @@ body::-webkit-scrollbar-thumb:hover {
     transition:
       border-color var(--micro-fast) ease,
       box-shadow var(--micro-fast) ease,
-      filter var(--micro-fast) ease,
       background-color var(--micro-fast) ease;
   }
 
@@ -242,14 +237,12 @@ body::-webkit-scrollbar-thumb:hover {
   }
 
   .skills-runway-row.ui-micro-card:hover .skills-bar-fill {
-    filter: saturate(1.18);
     box-shadow:
       0 0 18px rgba(201, 169, 72, 0.5),
       0 0 2px rgba(255, 255, 255, 0.42);
   }
 
   .tech-stack-card.ui-micro-card:hover {
-    filter: brightness(1.018);
     box-shadow:
       0 26px 70px rgba(0, 0, 0, 0.5),
       0 0 0 1px rgba(255, 255, 255, 0.18);
@@ -291,9 +284,7 @@ body .page-canvas.has-microinteractions :is(
     border-color var(--motion-glide-fast) var(--motion-glide-ease),
     box-shadow var(--motion-glide-duration) var(--motion-glide-ease),
     opacity var(--motion-glide-fast) var(--motion-glide-ease),
-    filter var(--motion-glide-fast) var(--motion-glide-ease),
     transform var(--motion-glide-duration) var(--motion-glide-ease);
-  will-change: transform;
 }
 
 body .page-canvas.has-microinteractions :is(
@@ -307,7 +298,6 @@ body .page-canvas.has-microinteractions :is(
     background-color var(--motion-glide-fast) var(--motion-glide-ease),
     background var(--motion-glide-fast) var(--motion-glide-ease),
     box-shadow var(--motion-glide-duration) var(--motion-glide-ease),
-    filter var(--motion-glide-fast) var(--motion-glide-ease),
     opacity var(--motion-glide-fast) var(--motion-glide-ease),
     transform var(--motion-glide-duration) var(--motion-glide-ease);
 }
@@ -1134,6 +1124,7 @@ body .page-canvas.has-side-wall-notch .hero .notes-widget .notes-widget-toggle::
   width: 100vw;
   height: 100%;
   background: #000;
+  contain: layout paint;
 }
 
 .work-horizontal-panel--intro {
@@ -1185,8 +1176,7 @@ body .page-canvas:not([data-theme='light']) .work-services-panel::after {
   mix-blend-mode: lighten;
   opacity: var(--dark-page-grain-opacity);
   transform: translate3d(0, 0, 0);
-  will-change: transform;
-  animation: landing-grain-shift 0.72s steps(1, end) infinite;
+  animation: none;
 }
 
 /* Floating navigation notch ------------------------------------------------
@@ -1206,30 +1196,27 @@ body .page-canvas .hero-nav {
   border-radius: 12px;
   translate: none;
   transform: translate3d(0, 0, 0);
-  will-change: background-color, backdrop-filter;
   transition:
-    top 720ms var(--nav-glide-ease),
-    width 760ms var(--nav-glide-ease),
-    padding 680ms var(--nav-glide-ease),
-    column-gap 680ms var(--nav-glide-ease),
+    top var(--motion-normal) var(--nav-glide-ease),
+    width 560ms var(--nav-glide-ease),
+    padding var(--motion-normal) var(--nav-glide-ease),
+    column-gap var(--motion-normal) var(--nav-glide-ease),
     border-color 360ms ease,
-    border-radius 720ms var(--nav-glide-ease),
+    border-radius var(--motion-normal) var(--nav-glide-ease),
     background-color 460ms ease,
-    box-shadow 520ms ease,
-    backdrop-filter 520ms ease,
-    -webkit-backdrop-filter 520ms ease;
+    box-shadow var(--motion-normal) ease;
 }
 
 body .page-canvas .hero-nav .logo {
   transition:
-    width 620ms var(--nav-glide-ease),
-    height 620ms var(--nav-glide-ease);
+    width var(--motion-normal) var(--nav-glide-ease),
+    height var(--motion-normal) var(--nav-glide-ease);
 }
 
 body .page-canvas .hero-nav .logo-image {
   transition:
-    width 620ms var(--nav-glide-ease),
-    height 620ms var(--nav-glide-ease),
+    width var(--motion-normal) var(--nav-glide-ease),
+    height var(--motion-normal) var(--nav-glide-ease),
     opacity 250ms ease,
     filter 250ms ease,
     transform 250ms ease;
@@ -1238,22 +1225,22 @@ body .page-canvas .hero-nav .logo-image {
 body .page-canvas .hero-nav .nav-links,
 body .page-canvas .hero-nav .nav-actions {
   transition:
-    gap 620ms var(--nav-glide-ease),
-    min-height 620ms var(--nav-glide-ease);
+    gap var(--motion-normal) var(--nav-glide-ease),
+    min-height var(--motion-normal) var(--nav-glide-ease);
 }
 
 body .page-canvas .hero-nav .nav-link {
   transition:
-    height 620ms var(--nav-glide-ease),
+    height var(--motion-normal) var(--nav-glide-ease),
     color 300ms ease,
-    font-size 480ms var(--nav-glide-ease),
-    letter-spacing 480ms var(--nav-glide-ease);
+    font-size var(--motion-normal) var(--nav-glide-ease),
+    letter-spacing var(--motion-normal) var(--nav-glide-ease);
 }
 
 body .page-canvas .hero-nav .theme-toggle {
   transition:
-    width 620ms var(--nav-glide-ease),
-    height 620ms var(--nav-glide-ease),
+    width var(--motion-normal) var(--nav-glide-ease),
+    height var(--motion-normal) var(--nav-glide-ease),
     background 240ms ease,
     border-color 240ms ease,
     color 240ms ease,
@@ -1263,10 +1250,10 @@ body .page-canvas .hero-nav .theme-toggle {
 body .page-canvas .hero-nav .contact-expander,
 body .page-canvas .hero-nav .nav-cta {
   transition:
-    width 620ms var(--nav-glide-ease),
-    min-width 620ms var(--nav-glide-ease),
-    height 620ms var(--nav-glide-ease),
-    min-height 620ms var(--nav-glide-ease),
+    width var(--motion-normal) var(--nav-glide-ease),
+    min-width var(--motion-normal) var(--nav-glide-ease),
+    height var(--motion-normal) var(--nav-glide-ease),
+    min-height var(--motion-normal) var(--nav-glide-ease),
     background 240ms ease,
     border-color 240ms ease,
     transform 240ms ease;
@@ -1449,9 +1436,9 @@ body .page-canvas[data-theme='light'] .hero-nav.is-scrolled {
   text-indent: -0.075em;
   text-transform: uppercase;
   opacity: 0;
-  transform: translate3d(0, 90px, 0) scale(0.84);
+  transform: translate3d(0, 44px, 0) scale(0.94);
   transform-origin: center;
-  will-change: transform, opacity, filter;
+  will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1825,7 +1812,7 @@ html body .skills-runway-chart {
 }
 
 .work-process-heading {
-  will-change: transform, opacity;
+  backface-visibility: hidden;
 }
 
 .work-process-index,
@@ -1891,7 +1878,6 @@ html body .skills-runway-chart {
   color: #0a0a0a;
   background: #f6f6f3;
   box-shadow: 0 22px 60px rgba(0, 0, 0, 0.42);
-  will-change: transform, opacity;
 }
 
 .tech-stack-card:nth-child(2) { background: #fff; }
@@ -1931,13 +1917,12 @@ html body .skills-runway-chart {
   overflow: hidden;
   opacity: 0;
   mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
-  will-change: transform, opacity;
 }
 
 .tech-stack-loop {
   display: flex;
   flex-direction: column;
-  will-change: transform;
+  will-change: auto;
 }
 
 .tech-stack-loop--up {
@@ -1958,6 +1943,7 @@ html body .skills-runway-chart {
 
 .work-horizontal-section.is-process-active .tech-stack-loop {
   animation-play-state: running;
+  will-change: transform;
 }
 
 .tech-stack-group {
@@ -2085,8 +2071,7 @@ body .page-canvas .hero::before {
   background-size: 72px 72px;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  will-change: transform;
-  animation: landing-grain-shift 0.48s steps(1, end) infinite;
+  animation: none;
 }
 
 body .page-canvas .hero::after {
@@ -2114,8 +2099,7 @@ body .page-canvas .about-section::before {
   background-size: 72px 72px;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  will-change: transform;
-  animation: landing-grain-shift 0.48s steps(1, end) infinite;
+  animation: none;
 }
 
 body .page-canvas .about-section::after {
@@ -2133,8 +2117,7 @@ body .page-canvas .contact-section::before {
   background-size: 72px 72px;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  will-change: transform;
-  animation: landing-grain-shift 0.48s steps(1, end) infinite;
+  animation: none;
 }
 
 body .page-canvas .contact-section::after {
