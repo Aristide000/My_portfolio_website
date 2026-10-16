@@ -1136,6 +1136,7 @@ body .page-canvas.has-side-wall-notch .hero .notes-widget .notes-widget-toggle::
 body .page-canvas:not([data-theme='light']) :is(
   .work-horizontal-panel--intro,
   .work-services-panel,
+  .work-projects-panel,
   .work-process-panel,
   .work-experience-shell,
   .skills-runway-section,
@@ -1159,6 +1160,7 @@ body .page-canvas:not([data-theme='light']) :is(
 
 body .page-canvas:not([data-theme='light']) :is(
   .work-horizontal-panel--intro,
+  .work-projects-panel,
   .work-process-panel,
   .work-experience-shell,
   .skills-runway-section,
@@ -1176,7 +1178,7 @@ body .page-canvas:not([data-theme='light']) .work-services-panel::after {
   mix-blend-mode: lighten;
   opacity: var(--dark-page-grain-opacity);
   transform: translate3d(0, 0, 0);
-  animation: none;
+  animation: landing-grain-shift 0.45s steps(1, end) infinite;
 }
 
 /* Floating navigation notch ------------------------------------------------
@@ -1791,6 +1793,60 @@ html body .skills-runway-chart {
 }
 
 /* Work horizontal sequence / tools and technologies */
+.work-projects-panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: #fff;
+  background: #080808;
+}
+
+.work-projects-content {
+  position: relative;
+  z-index: 2;
+  width: min(900px, calc(100% - 48px));
+  transform: translateY(2vh);
+  text-align: center;
+}
+
+.work-projects-content h2 {
+  margin: 0;
+  color: #fff;
+  font-family: 'Manrope', 'Outfit', sans-serif;
+  font-size: clamp(64px, 9vw, 132px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.065em;
+}
+
+.work-projects-soon {
+  position: absolute;
+  right: clamp(28px, 5vw, 64px);
+  bottom: clamp(32px, 5vh, 58px);
+  z-index: 1;
+  color: rgba(255, 255, 255, 0.94);
+  font-family: 'Manrope', 'Outfit', sans-serif;
+  font-size: clamp(78px, 11vw, 150px);
+  font-weight: 950;
+  line-height: 0.72;
+  letter-spacing: -0.09em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.work-projects-soon-blur-light {
+  filter: blur(1px);
+}
+
+.work-projects-soon-blur-medium {
+  filter: blur(2.5px);
+}
+
+.work-projects-soon-blur-strong {
+  filter: blur(5px);
+}
+
 .work-process-panel {
   position: relative;
   overflow: hidden;
@@ -2071,7 +2127,7 @@ body .page-canvas .hero::before {
   background-size: 72px 72px;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  animation: none;
+  animation: landing-grain-shift 0.45s steps(1, end) infinite;
 }
 
 body .page-canvas .hero::after {
@@ -2099,7 +2155,7 @@ body .page-canvas .about-section::before {
   background-size: 72px 72px;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  animation: none;
+  animation: landing-grain-shift 0.45s steps(1, end) infinite;
 }
 
 body .page-canvas .about-section::after {
@@ -2117,7 +2173,7 @@ body .page-canvas .contact-section::before {
   background-size: 72px 72px;
   opacity: 0.72;
   transform: translate3d(0, 0, 0);
-  animation: none;
+  animation: landing-grain-shift 0.45s steps(1, end) infinite;
 }
 
 body .page-canvas .contact-section::after {
@@ -2231,6 +2287,7 @@ body .page-canvas .hero-nav:not(.is-scrolled) .contact-toggle-line {
 
   body .page-canvas:not([data-theme='light']) :is(
     .work-horizontal-panel--intro,
+    .work-projects-panel,
     .work-process-panel,
     .work-experience-shell,
     .skills-runway-section,

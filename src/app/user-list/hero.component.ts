@@ -564,6 +564,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
               updateAboutPlatformTheme();
               this.aboutTextRevealReady = true;
               this.playAboutTextReveals();
+              this.startAboutProfileTypewriter();
               this.refreshScrollTextReveals();
             });
 
@@ -1483,10 +1484,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         id                 : 'work-horizontal-scroll',
         trigger            : section,
         start              : 'top top',
-        end                : () => {
-          const screenCount = reducedMotion ? 2.8 : window.innerWidth <= 760 ? 4.4 : 5;
-          return `+=${Math.max(window.innerWidth * screenCount, 2600)}`;
-        },
+        end                : () => `+=${Math.max(getTravelDistance(), window.innerHeight * 2.8)}`,
         pin                : true,
         scrub              : reducedMotion ? true : this.perfLite ? 0.35 : this.motion.scrub.work,
         anticipatePin      : 1,
@@ -2364,6 +2362,52 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  private startAboutProfileTypewriter(): void {
+    const paragraph = document.querySelector<HTMLElement>('.about-profile-note');
+    if (!paragraph || this.prefersReducedMotion()) return;
+
+    const fullText = paragraph.textContent?.trim() ?? '';
+    if (!fullText) return;
+
+    const characters = Array.from(fullText);
+    const typeState = { count: 0 };
+    paragraph.textContent = '';
+    const characterSpans = characters.map((character) => {
+      const span = document.createElement('span');
+      span.className = 'about-profile-note-character';
+      span.textContent = character;
+      span.style.visibility = 'hidden';
+      paragraph.append(span);
+      return span;
+    });
+    let cursorTimer: number | null = null;
+
+    const tween = gsap.to(typeState, {
+      count: characters.length,
+      duration: gsap.utils.clamp(1.2, 3.2, characters.length * 0.03),
+      ease: 'none',
+      onUpdate: () => {
+        const typedCount = Math.round(typeState.count);
+        characterSpans.forEach((span, index) => {
+          span.style.visibility = index < typedCount ? 'visible' : 'hidden';
+          span.classList.toggle('is-current', index === typedCount - 1);
+        });
+      },
+      onComplete: () => {
+        cursorTimer = window.setTimeout(() => {
+          cursorTimer = null;
+          paragraph.textContent = fullText;
+        }, 700);
+      },
+    });
+
+    this.track(tween);
+    this.cleanupFns.push(() => {
+      if (cursorTimer !== null) window.clearTimeout(cursorTimer);
+      paragraph.textContent = fullText;
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Site-wide scroll text reveal
   // ---------------------------------------------------------------------------
@@ -2374,7 +2418,6 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     const selectors = [
       '.about-corner-marker span',
       '.about-product-card h2',
-      '.about-profile-note',
       '.about-connect-button span',
       '.page-section .section-kicker',
       '.page-section .section-title-row h2',
@@ -3004,13 +3047,15 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       } => Boolean(state));
     const allLetters = textStates.flatMap(state => state.letters);
 
-    const minGreetingPace = 0.55;
+    const minGreetingPace = 0.42;
+    const morphOverlap = 0;
     const getPaceForSpeed = (index: number, baseSpeed: number): number => {
       const lastIndex = Math.max(0, textStates.length - 1);
       if (index === 0 || index === lastIndex) return baseSpeed;
 
       const accelerationProgress = index / Math.max(1, lastIndex - 1);
-      return baseSpeed * Math.max(minGreetingPace, 0.82 - accelerationProgress * 0.54);
+      const acceleratedPace = 0.88 - 0.46 * Math.pow(accelerationProgress, 1.35);
+      return baseSpeed * Math.max(minGreetingPace, acceleratedPace);
     };
     // Duration of just the language morph loop (first letter-in to last
     // letter's hold) — excludes the loader's own open delay and its
@@ -3026,7 +3071,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         const inDuration = (isFirst ? 0.34 : 0.22) * pace;
         const outDuration = 0.18 * pace;
         const inStagger = 0.014 * pace;
-        const outStagger = 0.01 * pace;
+        const outStagger = 0.014 * pace;
         const holdTime = (isFirst || isLast ? 0.42 : 0.08) * pace;
         const revealTime = inDuration + (state.letters.length - 1) * inStagger;
         const exitTime = outDuration + (state.letters.length - 1) * outStagger;
@@ -3035,7 +3080,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
           cursor += revealTime + holdTime;
         } else {
           const outStart = cursor + revealTime + holdTime;
-          cursor = outStart + exitTime + 0.06 * pace;
+          cursor = outStart + exitTime * morphOverlap;
         }
       });
 
@@ -3053,6 +3098,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       autoAlpha: 0,
       x: 0,
       y: 0,
+      rotationY: 0,
       scaleX: 0.18,
       scaleY: 1.16,
       filter: 'blur(5px)',
@@ -3091,7 +3137,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         const inDuration = (isFirst ? 0.34 : 0.22) * pace;
         const outDuration = 0.18 * pace;
         const inStagger = 0.014 * pace;
-        const outStagger = 0.01 * pace;
+        const outStagger = 0.014 * pace;
         const holdTime = (isFirst || isLast ? 0.42 : 0.08) * pace;
         const revealTime = inDuration + (state.letters.length - 1) * inStagger;
         const exitTime = outDuration + (state.letters.length - 1) * outStagger;
@@ -3108,6 +3154,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
               autoAlpha: 0,
               x        : collapseX,
               y        : collapseY,
+              rotationY: -78,
               scaleX   : 0.18,
               scaleY   : 1.16,
               filter   : 'blur(5px)',
@@ -3116,6 +3163,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
               autoAlpha: 1,
               x        : 0,
               y        : 0,
+              rotationY: 0,
               scaleX   : 1,
               scaleY   : 1,
               filter   : 'blur(0px)',
@@ -3135,16 +3183,17 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
               autoAlpha: 0,
               x        : collapseX,
               y        : (letterIndex: number) => collapseY(letterIndex) * -0.8,
+              rotationY: 78,
               scaleX   : 0.14,
               scaleY   : 1.22,
               filter   : 'blur(5px)',
               duration : outDuration,
               ease     : 'power3.in',
-              stagger  : { each: outStagger, from: 'edges' },
+              stagger  : { each: outStagger, from: 'center' },
             }, outStart)
             .set(state.text, { autoAlpha: 0 }, outStart + exitTime + 0.02 * pace);
 
-          morphStart = outStart + exitTime + 0.06 * pace;
+          morphStart = outStart + exitTime * morphOverlap;
         }
       });
 

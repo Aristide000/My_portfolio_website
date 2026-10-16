@@ -71,12 +71,15 @@
   white-space: nowrap;
   text-shadow: 0 0 18px rgba(255, 176, 0, 0.2);
   transform-origin: center;
+  perspective: 700px;
+  transform-style: preserve-3d;
 }
 
 .landing-letter {
   display: inline-block;
   overflow: hidden;
   backface-visibility: hidden;
+  transform-style: preserve-3d;
   transform-origin: 50% 62%;
 }
 
@@ -1075,35 +1078,6 @@
   font-size: 12px;
   font-weight: 800;
   line-height: 1;
-}
-
-.chatbox-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  color: rgba(255, 255, 255, 0.4);
-  font-family: 'Manrope', 'Outfit', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.chatbox-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #3ddc84;
-  box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.5);
-  animation: chatbox-pulse 2s ease-out infinite;
-}
-
-@keyframes chatbox-pulse {
-  70% { box-shadow: 0 0 0 5px rgba(61, 220, 132, 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .chatbox-status-dot { animation: none; }
 }
 
 .chatbox-close {
@@ -3214,6 +3188,19 @@ button.site-scroll-text-reveal {
   content: none;
 }
 
+@media (min-width: 981px) {
+  .about-profile-panel {
+    box-sizing: border-box;
+    height: var(--about-pinned-panel-height, 500px);
+    padding-bottom: 0;
+  }
+
+  .about-profile-card {
+    height: 100%;
+    min-height: 0;
+  }
+}
+
 .about-product-card {
   position: absolute;
   left: 0;
@@ -4991,7 +4978,8 @@ button.site-scroll-text-reveal {
   line-height: 1.45;
 }
 
-.contact-typewriter-cursor::after {
+.contact-typewriter-cursor::after,
+.about-profile-note-character.is-current::after {
   content: '';
   display: inline-block;
   width: 2px;
