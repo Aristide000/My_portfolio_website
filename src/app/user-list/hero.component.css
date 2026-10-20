@@ -68,6 +68,7 @@
   font-size: 2.5rem;
   font-weight: 500;
   letter-spacing: 0.05em;
+  line-height: 1.2;
   white-space: nowrap;
   text-shadow: 0 0 18px rgba(255, 176, 0, 0.2);
   transform-origin: center;
@@ -380,13 +381,12 @@
   bottom: 2px;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, rgba(255, 176, 0, 0.2), #ffb000, rgba(255, 176, 0, 0.2));
-  box-shadow: 0 0 12px rgba(255, 176, 0, 0.44);
+  background: #ffb000;
   transition: width 0.35s ease;
 }
 
 .nav-link:hover { color: rgba(255, 255, 255, 0.78); }
-.nav-link.active { color: #fff; }
+.nav-link.active { color: #ffb000; }
 
 .nav-link:hover::after,
 .nav-link.active::after {
@@ -406,70 +406,6 @@
   justify-content: flex-end;
   gap: 12px;
   min-height: var(--nav-row-height);
-}
-
-.theme-toggle {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 24px;
-  padding: 0;
-  border: 1px solid rgba(255, 213, 96, 0.56);
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.025);
-  color: #ffd560;
-  cursor: pointer;
-  box-shadow: none;
-  transition:
-    background 0.24s ease,
-    border-color 0.24s ease,
-    color 0.24s ease,
-    transform 0.24s ease;
-}
-
-.theme-toggle:hover,
-.theme-toggle:focus-visible {
-  border-color: rgba(255, 213, 96, 0.82);
-  background: rgba(255, 176, 0, 0.08);
-  color: #ffdc74;
-  transform: translateY(-1px);
-}
-
-.theme-toggle:focus-visible {
-  outline: 1px solid rgba(255, 213, 96, 0.82);
-  outline-offset: 4px;
-}
-
-.theme-icon {
-  grid-area: 1 / 1;
-  width: 13px;
-  height: 13px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0;
-  transform: scale(0.72) rotate(-16deg);
-  transition:
-    opacity 0.22s ease,
-    transform 0.22s ease;
-}
-
-.theme-icon--sun {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
-}
-
-.page-canvas[data-theme='light'] .theme-icon--sun {
-  opacity: 0;
-  transform: scale(0.72) rotate(16deg);
-}
-
-.page-canvas[data-theme='light'] .theme-icon--moon {
-  opacity: 1;
-  transform: scale(1) rotate(0deg);
 }
 
 .contact-expander {
@@ -939,7 +875,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 92px;
+  min-width: 128px;
   min-height: 28px;
   padding: 6px 14px;
   overflow: hidden;
@@ -956,13 +892,13 @@
   cursor: pointer;
   transform-origin: 100% 50%;
   transition:
-    opacity 180ms ease,
-    transform var(--chat-morph-duration) var(--chat-morph-ease),
-    border-color 0.25s ease,
+    opacity var(--motion-glide-fast) var(--motion-glide-ease),
+    transform var(--motion-glide-duration) var(--motion-glide-ease-soft),
+    border-color var(--motion-glide-fast) var(--motion-glide-ease),
     border-radius var(--chat-morph-duration) var(--chat-morph-ease),
-    background 0.25s ease,
-    box-shadow 0.25s ease,
-    color 0.25s ease;
+    background var(--motion-glide-fast) var(--motion-glide-ease),
+    box-shadow var(--motion-glide-duration) var(--motion-glide-ease-soft),
+    color var(--motion-glide-fast) var(--motion-glide-ease);
 }
 
 .notes-widget-panel {
@@ -1015,7 +951,7 @@
 
 .notes-widget:hover .notes-widget-toggle,
 .notes-widget:focus-within .notes-widget-toggle {
-  transform: translateY(-2px);
+  transform: translateY(-3px);
   border-color: rgba(255, 176, 0, 0.82);
   background: #050505;
   color: #ffb000;
@@ -5322,20 +5258,7 @@ button.site-scroll-text-reveal {
 
 .page-canvas[data-theme='light'] .nav-link { color: rgba(17, 17, 17, 0.52); }
 .page-canvas[data-theme='light'] .nav-link:hover { color: rgba(17, 17, 17, 0.76); }
-.page-canvas[data-theme='light'] .nav-link.active { color: #111; }
-
-.page-canvas[data-theme='light'] .theme-toggle {
-  border-color: rgba(17, 28, 44, 0.14);
-  background: rgba(255, 255, 255, 0.5);
-  color: rgba(17, 28, 44, 0.7);
-}
-
-.page-canvas[data-theme='light'] .theme-toggle:is(:hover, :focus-visible) {
-  border-color: rgba(17, 28, 44, 0.32);
-  background: rgba(255, 255, 255, 0.72);
-  color: #111c2c;
-}
-
+.page-canvas[data-theme='light'] .nav-link.active { color: #ffb000; }
 .page-canvas[data-theme='light'] .nav-cta { color: #111 !important; }
 .page-canvas[data-theme='light'] .contact-toggle-line { background: #111; }
 

@@ -31,9 +31,9 @@
   --ui-scrollbar-active-hover: rgba(255, 176, 0, 0.86);
   --motion-enter-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-move-ease: cubic-bezier(0.65, 0, 0.35, 1);
-  --motion-fast: 240ms;
-  --motion-normal: 520ms;
-  --motion-reveal: 760ms;
+  --motion-fast: 280ms;
+  --motion-normal: 620ms;
+  --motion-reveal: 820ms;
   --motion-choreography-ease: var(--motion-enter-ease);
   --motion-choreography-duration: var(--motion-reveal);
   --motion-choreography-fast: var(--motion-normal);
@@ -41,9 +41,9 @@
   --motion-glide-ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --motion-glide-duration: var(--motion-normal);
   --motion-glide-fast: var(--motion-fast);
-  --micro-ease: cubic-bezier(0.2, 0.9, 0.2, 1);
-  --micro-fast: 180ms;
-  --micro-medium: 520ms;
+  --micro-ease: var(--motion-glide-ease-soft);
+  --micro-fast: 240ms;
+  --micro-medium: 620ms;
   --micro-highlight: rgba(255, 176, 0, 0.22);
   --micro-highlight-soft: rgba(255, 255, 255, 0.12);
   --micro-focus-ring: rgba(255, 176, 0, 0.52);
@@ -275,7 +275,14 @@ body .page-canvas.has-microinteractions :is(
   .chatbox-close,
   .chatbox-input-row button,
   .about-connect-button,
-  .about-panel-toggle
+  .about-panel-toggle,
+  .nav-cta,
+  .contact-popup-links a,
+  .scroll-hint,
+  .about-more-back,
+  .about-more-service-row,
+  .about-intro-link,
+  .about-portrait-tag
 ) {
   transition:
     color var(--motion-glide-fast) var(--motion-glide-ease),
@@ -291,7 +298,10 @@ body .page-canvas.has-microinteractions :is(
   .service-link,
   .work-experience-card,
   .tech-stack-card,
-  .contact-form-panel
+  .contact-form-panel,
+  .about-process-list li,
+  .about-experience-item,
+  .about-skill-list li
 ) {
   transition:
     border-color var(--motion-glide-fast) var(--motion-glide-ease),
@@ -339,6 +349,8 @@ body .page-canvas.has-microinteractions :is(
   body .page-canvas.has-microinteractions :is(
     .nav-link,
     .contact-popup-links a,
+    .notes-widget-toggle,
+    .notes-widget-toggle-label,
     .contact-details-list a,
     .contact-social-rail a,
     .contact-form-panel button,
@@ -485,9 +497,7 @@ body .page-canvas.has-microinteractions :is(
 
 .notes-widget-toggle-label {
   display: inline-block;
-  transition:
-    letter-spacing 220ms var(--micro-ease),
-    transform 220ms var(--micro-ease);
+  transition: transform 420ms var(--motion-glide-ease-soft);
 }
 
 .notes-widget-toggle::after {
@@ -499,19 +509,18 @@ body .page-canvas.has-microinteractions :is(
   opacity: 0;
   background: linear-gradient(105deg, transparent 22%, rgba(255, 255, 255, 0.18), transparent 58%);
   transform: translateX(-120%);
+  transition:
+    opacity 260ms var(--motion-glide-ease-soft),
+    transform 760ms var(--motion-glide-ease-soft);
 }
 
 .notes-widget-toggle:is(:hover, :focus-visible) .notes-widget-toggle-label {
-  letter-spacing: 0.02em;
-  transform: translateY(-1px);
+  transform: scale(1.015);
 }
 
 .notes-widget-toggle:is(:hover, :focus-visible)::after {
   opacity: 1;
   transform: translateX(120%);
-  transition:
-    opacity 180ms ease,
-    transform 620ms var(--micro-ease);
 }
 
 .notes-widget-toggle:active {
@@ -572,6 +581,7 @@ body .page-canvas.has-microinteractions :is(
 @media (prefers-reduced-motion: reduce) {
   .notes-widget-morph-layer,
   .notes-widget-morph-blob,
+  .notes-widget-toggle::after,
   .notes-widget--closing .notes-widget-toggle {
     animation: none !important;
     transition-duration: 1ms !important;
@@ -1302,8 +1312,18 @@ body .page-canvas .hero-nav.is-scrolled .nav-link {
   text-transform: none;
 }
 
-body .page-canvas .hero-nav.is-scrolled .nav-link:is(:hover, .active) {
+body .page-canvas .hero-nav.is-scrolled .nav-link:hover {
   color: #fff !important;
+}
+
+body .page-canvas .hero-nav.is-scrolled .nav-link.active {
+  color: #ffb000 !important;
+}
+
+body .page-canvas.has-microinteractions .hero-nav .nav-link::after {
+  transition:
+    width var(--motion-glide-fast) var(--motion-glide-ease),
+    transform var(--motion-glide-fast) var(--motion-glide-ease);
 }
 
 body .page-canvas .hero-nav.is-scrolled .nav-link::after {
@@ -1562,11 +1582,6 @@ html body .skills-runway-chart {
     margin-top: 18px;
   }
 
-  html body .skills-years {
-    margin-bottom: 7px;
-    padding-bottom: 7px;
-  }
-
   html body .skills-runway-row {
     min-height: 22px;
   }
@@ -1621,8 +1636,7 @@ html body .skills-runway-chart {
 
 .skills-runway-eyebrow,
 .skills-runway-status,
-.skills-year,
-.skills-row-years {
+.skills-row-score {
   font-family: 'Space Mono', monospace;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -1655,30 +1669,11 @@ html body .skills-runway-chart {
   margin-top: clamp(54px, 8vh, 82px);
 }
 
-.skills-years,
 .skills-runway-row {
   display: grid;
-  grid-template-columns: minmax(132px, 192px) minmax(360px, 1fr) 58px;
+  grid-template-columns: minmax(132px, 192px) minmax(160px, 1fr) 66px;
   column-gap: 26px;
   align-items: center;
-}
-
-.skills-years {
-  grid-template-columns: minmax(132px, 192px) repeat(6, minmax(0, 1fr)) 58px;
-  margin-bottom: 15px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.085);
-}
-
-.skills-year {
-  color: rgba(242, 240, 234, 0.22);
-  font-size: 9px;
-  font-weight: 800;
-  text-align: center;
-}
-
-.skills-year--now {
-  color: #b99530;
 }
 
 .skills-runway-list {
@@ -1716,15 +1711,16 @@ html body .skills-runway-chart {
 .skills-bar-fill {
   position: absolute;
   inset-block: 0;
-  left: var(--skill-start);
-  width: var(--skill-width);
+  right: 0;
+  width: var(--skill-score);
   border-radius: inherit;
   background: linear-gradient(90deg, rgba(185, 151, 53, 0.72), #c8a848);
   box-shadow: 0 0 14px rgba(201, 169, 72, 0.32);
 }
 
-.skills-row-years {
-  color: rgba(242, 240, 234, 0.25);
+.skills-row-score {
+  color: #ffb000;
+  font-family: 'Space Mono', monospace;
   font-size: 8px;
   font-weight: 900;
   text-align: right;
@@ -1744,10 +1740,6 @@ html body .skills-runway-chart {
     margin-left: 0;
   }
 
-  .skills-years {
-    display: none;
-  }
-
   .skills-runway-chart {
     margin-top: 38px;
   }
@@ -1761,6 +1753,7 @@ html body .skills-runway-chart {
   .skills-row-name {
     font-size: 11px;
   }
+
 }
 
 @media (max-width: 520px) {
@@ -1787,9 +1780,10 @@ html body .skills-runway-chart {
     grid-row: 2;
   }
 
-  .skills-row-years {
+  .skills-row-score {
     align-self: start;
   }
+
 }
 
 /* Work horizontal sequence / tools and technologies */
@@ -2247,8 +2241,12 @@ body .page-canvas .hero-nav:not(.is-scrolled) .nav-link {
   letter-spacing: var(--landing-nav-letter-spacing);
 }
 
-body .page-canvas .hero-nav:not(.is-scrolled) .nav-link:is(:hover, .active) {
+body .page-canvas .hero-nav:not(.is-scrolled) .nav-link:hover {
   color: #111;
+}
+
+body .page-canvas .hero-nav:not(.is-scrolled) .nav-link.active {
+  color: #111 !important;
 }
 
 body .page-canvas .hero-nav:not(.is-scrolled) .nav-link::after {

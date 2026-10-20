@@ -1,4 +1,4 @@
-﻿<div class="landing-loader" aria-hidden="true">
+<div class="landing-loader" aria-hidden="true">
   <div class="landing-loader-text">
     <div class="landing-welcome-text">
       <h2>Hello</h2>
@@ -53,7 +53,7 @@
   <button type="button" class="side-wall-notch" aria-label="Open chat box" aria-expanded="false" data-side-chat-toggle>
     <svg class="side-wall-notch-frame" viewBox="0 0 36 220" preserveAspectRatio="none" aria-hidden="true" focusable="false">
       <path d="M36 21C34.9 45 31.2 58.2 22.8 64.6C15.4 70.2 4 68.7 1.2 84.7C0.4 89.4 0 94.5 0 100.3V119.7C0 125.5 0.4 130.6 1.2 135.3C4 151.3 15.4 149.8 22.8 155.4C31.2 161.8 34.9 175 36 199V21Z" />
-      <text class="side-wall-notch-svg-label side-wall-notch-svg-label--cta" x="16.2" y="110" text-anchor="middle" dominant-baseline="middle" textLength="48" lengthAdjust="spacingAndGlyphs" transform="rotate(-90 16.2 110)">Talk to me</text>
+      <text class="side-wall-notch-svg-label side-wall-notch-svg-label--cta" x="16.2" y="110" text-anchor="middle" dominant-baseline="middle" textLength="54" lengthAdjust="spacingAndGlyphs" transform="rotate(-90 16.2 110)">Ask any question</text>
       <text class="side-wall-notch-svg-label side-wall-notch-svg-label--time" x="16.2" y="110" text-anchor="middle" dominant-baseline="middle" textLength="48" lengthAdjust="spacingAndGlyphs" transform="rotate(-90 16.2 110)" data-side-notch-time>--:--:--</text>
     </svg>
   </button>
@@ -74,23 +74,6 @@
     </ul>
 
     <div class="nav-actions nav-contact">
-      <button
-        type="button"
-        class="theme-toggle"
-        aria-label="Switch to light theme"
-        aria-pressed="false"
-        title="Switch to light theme"
-        data-theme-toggle
-      >
-        <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M21 12.8A8.6 8.6 0 1 1 11.2 3 6.7 6.7 0 0 0 21 12.8Z" />
-        </svg>
-        <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2.8v2.1M12 19.1v2.1M4.9 4.9l1.5 1.5M17.6 17.6l1.5 1.5M2.8 12h2.1M19.1 12h2.1M4.9 19.1l1.5-1.5M17.6 6.4l1.5-1.5" />
-        </svg>
-      </button>
-
       <div class="contact-expander">
         <button
           type="button"
@@ -132,7 +115,7 @@
 
   <div class="notes-widget">
     <button type="button" class="notes-widget-toggle" aria-label="Open chat box">
-      <span class="notes-widget-toggle-label">Talk to me</span>
+      <span class="notes-widget-toggle-label">Ask any question</span>
     </button>
     <div class="notes-widget-panel chatbox" role="dialog" aria-label="Chat with Aristide's assistant" aria-hidden="true">
       <div class="chatbox-header">
@@ -298,7 +281,7 @@ Hi! I’m Aristide’s assistant. I’m here to help you learn more about him, h
             <div class="about-more-service-results">
               <span>Focus areas</span>
               <strong>UI systems</strong>
-              <strong>Figma → code</strong>
+              <strong>Figma &rarr; code</strong>
               <strong>Design QA</strong>
             </div>
           </div>
@@ -510,67 +493,61 @@ Hi! I’m Aristide’s assistant. I’m here to help you learn more about him, h
       <div class="skills-runway-frame">
         <header class="skills-runway-header">
           <p class="skills-runway-eyebrow">RUNWAY</p>
-          <h2 class="skills-runway-title">Skills</h2>
+          <h2 class="skills-runway-title">Other Skills</h2>
           <p class="skills-runway-status">CLEARED FOR DEPARTURE.</p>
         </header>
 
-        <div class="skills-runway-chart" aria-label="Skills timeline">
-          <div class="skills-years" aria-hidden="true">
-            <span></span>
-            <span class="skills-year">2021</span>
-            <span class="skills-year">2022</span>
-            <span class="skills-year">2023</span>
-            <span class="skills-year">2024</span>
-            <span class="skills-year">2025</span>
-            <span class="skills-year skills-year--now">NOW</span>
-            <span></span>
-          </div>
-
+        <div class="skills-runway-chart" aria-label="Skills scored out of 100">
           <ul class="skills-runway-list">
-            <li class="skills-runway-row" style="--skill-start: 20%; --skill-width: 80%;">
-              <span class="skills-row-name">Design</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">4 YRS</span>
+            <li class="skills-runway-row" style="--skill-score: 85%;">
+              <span class="skills-row-name">Creative thinking</span>
+              <span class="skills-bar" role="img" aria-label="85 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">85%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 20%; --skill-width: 80%;">
-              <span class="skills-row-name">Photography</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">4 YRS</span>
+            <li class="skills-runway-row" style="--skill-score: 85%;">
+              <span class="skills-row-name">Learning adaptability</span>
+              <span class="skills-bar" role="img" aria-label="85 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">85%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 60%; --skill-width: 40%;">
-              <span class="skills-row-name">Interaction Design</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">2 YRS</span>
+            <li class="skills-runway-row" style="--skill-score: 80%;">
+              <span class="skills-row-name">Attention to detail</span>
+              <span class="skills-bar" role="img" aria-label="80 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">80%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 60%; --skill-width: 40%;">
-              <span class="skills-row-name">Prototyping &amp; User Testing</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">2 YRS</span>
+            <li class="skills-runway-row" style="--skill-score: 78%;">
+              <span class="skills-row-name">Visual design judgment</span>
+              <span class="skills-bar" role="img" aria-label="78 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">78%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 80%; --skill-width: 20%;">
-              <span class="skills-row-name">Design Systems</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">1 YR</span>
+            <li class="skills-runway-row" style="--skill-score: 78%;">
+              <span class="skills-row-name">Communication and feedback</span>
+              <span class="skills-bar" role="img" aria-label="78 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">78%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 80%; --skill-width: 20%;">
-              <span class="skills-row-name">Design Leadership</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">1 YR</span>
+            <li class="skills-runway-row" style="--skill-score: 75%;">
+              <span class="skills-row-name">Career self-development</span>
+              <span class="skills-bar" role="img" aria-label="75 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">75%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 80%; --skill-width: 20%;">
-              <span class="skills-row-name">Information Architecture</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">1 YR</span>
+            <li class="skills-runway-row" style="--skill-score: 70%;">
+              <span class="skills-row-name">Team collaboration</span>
+              <span class="skills-bar" role="img" aria-label="70 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">70%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 80%; --skill-width: 20%;">
-              <span class="skills-row-name">UX Strategy</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">1 YR</span>
+            <li class="skills-runway-row" style="--skill-score: 68%;">
+              <span class="skills-row-name">Content and UX writing</span>
+              <span class="skills-bar" role="img" aria-label="68 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">68%</span>
             </li>
-            <li class="skills-runway-row" style="--skill-start: 90%; --skill-width: 10%;">
-              <span class="skills-row-name">AI-Assisted Design</span>
-              <span class="skills-bar" aria-hidden="true"><span class="skills-bar-fill"></span></span>
-              <span class="skills-row-years">&lt;1 YR</span>
+            <li class="skills-runway-row" style="--skill-score: 68%;">
+              <span class="skills-row-name">Research and analysis</span>
+              <span class="skills-bar" role="img" aria-label="68 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">68%</span>
+            </li>
+            <li class="skills-runway-row" style="--skill-score: 40%;">
+              <span class="skills-row-name">Python programming</span>
+              <span class="skills-bar" role="img" aria-label="40 percent"><span class="skills-bar-fill"></span></span>
+              <span class="skills-row-score">40%</span>
             </li>
           </ul>
         </div>

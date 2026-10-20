@@ -109,7 +109,7 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       this.setupLocalTime();
       this.setupBackgroundInstrumentation();
       this.setupNotesWidget();
-      this.setupThemeToggle();
+      this.setupTheme();
       this.setupNavScrolling();
       this.setupContactForms();
       this.setupMicroInteractions();
@@ -1661,11 +1661,9 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
   // Nav smooth scroll
   // ---------------------------------------------------------------------------
 
-  private setupThemeToggle(): void {
+  private setupTheme(): void {
     const pageCanvas = document.querySelector<HTMLElement>('.page-canvas');
-    const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-
-    if (!pageCanvas || !toggle) return;
+    if (!pageCanvas) return;
 
     const getStoredTheme = (): SiteTheme | null => {
       try {
@@ -1676,41 +1674,18 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       }
     };
 
-    const saveTheme = (theme: SiteTheme): void => {
-      try {
-        window.localStorage.setItem(this.themeStorageKey, theme);
-      } catch (_) {}
-    };
-
-    const applyTheme = (theme: SiteTheme, persist = false): void => {
+    const applyTheme = (theme: SiteTheme): void => {
       pageCanvas.dataset['theme'] = theme;
       document.documentElement.dataset['theme'] = theme;
-
-      const isLight = theme === 'light';
-      const nextTheme = isLight ? 'dark' : 'light';
-      const label = `Switch to ${nextTheme} theme`;
-
-      toggle.setAttribute('aria-label', label);
-      toggle.setAttribute('aria-pressed', String(isLight));
-      toggle.setAttribute('title', label);
-
-      if (persist) saveTheme(theme);
 
       window.requestAnimationFrame(() => {
         try { ScrollTrigger.refresh(); } catch (_) {}
       });
     };
 
-    const onToggleTheme = (): void => {
-      const currentTheme: SiteTheme = pageCanvas.dataset['theme'] === 'light' ? 'light' : 'dark';
-      applyTheme(currentTheme === 'light' ? 'dark' : 'light', true);
-    };
-
     applyTheme(getStoredTheme() ?? 'dark');
-    toggle.addEventListener('click', onToggleTheme);
 
     this.cleanupFns.push(() => {
-      toggle.removeEventListener('click', onToggleTheme);
       delete document.documentElement.dataset['theme'];
     });
   }
@@ -3005,50 +2980,25 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     document.body.style.overflow = 'hidden';
     document.documentElement.style.overflow = 'hidden';
 
-    type GraphemeSegmenter = { segment(value: string): Iterable<{ segment: string }> };
-    const Segmenter = (Intl as typeof Intl & {
-      Segmenter?: new (
-        locale?: string,
-        options?: { granularity: 'grapheme' }
-      ) => GraphemeSegmenter;
-    }).Segmenter;
-    const segmenter = Segmenter ? new Segmenter(undefined, { granularity: 'grapheme' }) : null;
-    const splitGraphemes = (value: string): string[] =>
-      segmenter
-        ? Array.from(segmenter.segment(value), part => part.segment)
-        : Array.from(value);
-
-    const renderLetters = (heading: HTMLElement, label: string): HTMLElement[] => {
-      heading.textContent = '';
-      heading.setAttribute('aria-label', label);
-
-      return splitGraphemes(label).map((character) => {
-        const letter = document.createElement('span');
-        letter.className = character === ' ' ? 'landing-letter landing-letter--space' : 'landing-letter';
-        letter.textContent = character === ' ' ? ' ' : character;
-        heading.appendChild(letter);
-        return letter;
-      });
-    };
-
     const textStates = welcomeTexts
-      .map((text) => {
-        const heading = text.querySelector<HTMLElement>('h2');
-        const label = heading?.textContent?.trim() ?? '';
+      .map((text) => ({ text, heading: text.querySelector<HTMLElement>('h2') }))
+      .filter((state): state is { text: HTMLElement; heading: HTMLElement } =>
+        Boolean(state.heading?.textContent?.trim())
+      );
+    const greetingPositions = textStates.map((state, index) => {
+      if (index === 0 || index === textStates.length - 1) return { x: 0, y: 0 };
 
-        return heading && label
-          ? { text, heading, letters: renderLetters(heading, label) }
-          : null;
-      })
-      .filter((state): state is {
-        text: HTMLElement;
-        heading: HTMLElement;
-        letters: HTMLElement[];
-      } => Boolean(state));
-    const allLetters = textStates.flatMap(state => state.letters);
+      const rect = state.heading.getBoundingClientRect();
+      const maxX = Math.max(0, (window.innerWidth - rect.width) / 2 - 48);
+      const maxY = Math.max(0, (window.innerHeight - rect.height) / 2 - 48);
+      return {
+        x: (Math.random() * 2 - 1) * maxX,
+        y: (Math.random() * 2 - 1) * maxY,
+      };
+    });
 
-    const minGreetingPace = 0.42;
-    const morphOverlap = 0;
+    const minGreetingPace = 0.52;
+    const transitionOverlap = 0;
     const getPaceForSpeed = (index: number, baseSpeed: number): number => {
       const lastIndex = Math.max(0, textStates.length - 1);
       if (index === 0 || index === lastIndex) return baseSpeed;
@@ -3057,52 +3007,41 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
       const acceleratedPace = 0.88 - 0.46 * Math.pow(accelerationProgress, 1.35);
       return baseSpeed * Math.max(minGreetingPace, acceleratedPace);
     };
-    // Duration of just the language morph loop (first letter-in to last
-    // letter's hold) — excludes the loader's own open delay and its
-    // slide-away close, which are the tab's chrome, not the morph itself.
+    // The word-level glide loop excludes the loader's open and slide-away transitions.
     const projectMorphDuration = (baseSpeed: number): number => {
       const lastIndex = Math.max(0, textStates.length - 1);
       let cursor = 0;
 
-      textStates.forEach((state, index) => {
+      textStates.forEach((_, index) => {
         const isFirst = index === 0;
         const isLast = index === lastIndex;
         const pace = getPaceForSpeed(index, baseSpeed);
-        const inDuration = (isFirst ? 0.34 : 0.22) * pace;
-        const outDuration = 0.18 * pace;
-        const inStagger = 0.014 * pace;
-        const outStagger = 0.014 * pace;
-        const holdTime = (isFirst || isLast ? 0.42 : 0.08) * pace;
-        const revealTime = inDuration + (state.letters.length - 1) * inStagger;
-        const exitTime = outDuration + (state.letters.length - 1) * outStagger;
+        const inDuration = (isFirst ? 0.42 : isLast ? 0.9 : 0.32) * pace;
+        const outDuration = 0.25 * pace;
+        const holdTime = (isFirst ? 0.42 : isLast ? 0.65 : 0.08) * pace;
+        const revealTime = inDuration;
+        const exitTime = outDuration;
 
         if (isLast) {
           cursor += revealTime + holdTime;
         } else {
           const outStart = cursor + revealTime + holdTime;
-          cursor = outStart + exitTime * morphOverlap;
+          cursor = outStart + exitTime * (1 - transitionOverlap);
         }
       });
 
       return cursor;
     };
 
-    const targetMorphSeconds = 1.9;
+    const targetMorphSeconds = 6;
     const projectedMorphDuration = projectMorphDuration(speed);
     const effectiveSpeed = projectedMorphDuration > 0
       ? speed * (targetMorphSeconds / projectedMorphDuration)
       : speed;
 
-    gsap.set(welcomeTexts, { autoAlpha: 0 });
-    gsap.set(allLetters, {
-      autoAlpha: 0,
-      x: 0,
-      y: 0,
-      rotationY: 0,
-      scaleX: 0.18,
-      scaleY: 1.16,
-      filter: 'blur(5px)',
-    });
+    gsap.set(welcomeTexts, { autoAlpha: 0, x: 0, y: 0, scale: 0.94, filter: 'blur(6px)' });
+    gsap.set(textStates.map(state => state.heading), { letterSpacing: '0.24em' });
+    textStates.forEach((state, index) => gsap.set(state.text, greetingPositions[index]));
     gsap.set(loaderText,   { y: 0, autoAlpha: 1, force3D: false });
     gsap.set(loaderRound,  { scaleY: 1 });
 
@@ -3134,66 +3073,52 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         const isFirst = index === 0;
         const isLast = index === textStates.length - 1;
         const pace = getGreetingPace(index);
-        const inDuration = (isFirst ? 0.34 : 0.22) * pace;
-        const outDuration = 0.18 * pace;
-        const inStagger = 0.014 * pace;
-        const outStagger = 0.014 * pace;
-        const holdTime = (isFirst || isLast ? 0.42 : 0.08) * pace;
-        const revealTime = inDuration + (state.letters.length - 1) * inStagger;
-        const exitTime = outDuration + (state.letters.length - 1) * outStagger;
-        const middleIndex = (state.letters.length - 1) / 2;
-        const collapseX = (letterIndex: number): number => (middleIndex - letterIndex) * 13;
-        const collapseY = (letterIndex: number): number =>
-          Math.sin((index + 1) * 1.4 + letterIndex * 0.9) * 5;
+        const inDuration = (isFirst ? 0.42 : isLast ? 0.9 : 0.32) * pace;
+        const outDuration = 0.25 * pace;
+        const holdTime = (isFirst ? 0.42 : isLast ? 0.65 : 0.08) * pace;
+        const revealTime = inDuration;
+        const exitTime = outDuration;
+        const position = greetingPositions[index];
 
-        timeline
-          .set(state.text, { autoAlpha: 1 }, morphStart)
-          .fromTo(
-            state.letters,
-            {
-              autoAlpha: 0,
-              x        : collapseX,
-              y        : collapseY,
-              rotationY: -78,
-              scaleX   : 0.18,
-              scaleY   : 1.16,
-              filter   : 'blur(5px)',
-            },
-            {
-              autoAlpha: 1,
-              x        : 0,
-              y        : 0,
-              rotationY: 0,
-              scaleX   : 1,
-              scaleY   : 1,
-              filter   : 'blur(0px)',
-              duration : inDuration,
-              ease     : 'expo.out',
-              stagger  : { each: inStagger, from: 'center' },
-            },
-            morphStart
-          );
+        timeline.fromTo(
+          state.text,
+          { autoAlpha: 0, ...position, scale: 0.94, filter: 'blur(6px)' },
+          {
+            autoAlpha: 1,
+            ...position,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: inDuration,
+            ease: isLast ? 'sine.out' : 'power3.out',
+          },
+          morphStart
+        ).fromTo(
+          state.heading,
+          { letterSpacing: '0.24em' },
+          { letterSpacing: '0.05em', duration: inDuration, ease: 'power2.out' },
+          morphStart
+        );
 
         if (isLast) {
           timeline.to(state.text, { scale: 1, duration: holdTime, ease: 'none' }, morphStart + revealTime);
         } else {
           const outStart = morphStart + revealTime + holdTime;
           timeline
-            .to(state.letters, {
+            .to(state.text, {
               autoAlpha: 0,
-              x        : collapseX,
-              y        : (letterIndex: number) => collapseY(letterIndex) * -0.8,
-              rotationY: 78,
-              scaleX   : 0.14,
-              scaleY   : 1.22,
-              filter   : 'blur(5px)',
-              duration : outDuration,
-              ease     : 'power3.in',
-              stagger  : { each: outStagger, from: 'center' },
+              scale: 0.96,
+              filter: 'blur(5px)',
+              duration: outDuration,
+              ease: 'power2.in',
+            }, outStart)
+            .to(state.heading, {
+              letterSpacing: '0.24em',
+              duration: outDuration,
+              ease: 'power2.in',
             }, outStart)
             .set(state.text, { autoAlpha: 0 }, outStart + exitTime + 0.02 * pace);
 
-          morphStart = outStart + exitTime * morphOverlap;
+          morphStart = outStart + exitTime * (1 - transitionOverlap);
         }
       });
 
@@ -3225,7 +3150,10 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
         },
         '+=0.02'
       )
-      .call(() => this.showSolariTarget())
+      .call(() => {
+        if (this.prefersReducedMotion()) this.showSolariTarget();
+        else this.replaySolariBoard();
+      })
       .from('.hero-meta', { y: 8, autoAlpha: 0, duration: 0.56 * baseDuration }, '-=0.18')
       .fromTo(
         '.notes-widget',
@@ -3413,6 +3341,52 @@ export class HeroComponent implements AfterViewInit, OnDestroy {
     this.solariTarget.split('').forEach((letter, index) => {
       this.runSolariSequence(this.solariTiles[index], letter, 140 + index * 115, runId);
     });
+    this.scheduleSolariMisfire(true);
+  }
+
+  private scheduleSolariMisfire(initial = false): void {
+    if (this.isDestroyed || this.prefersReducedMotion() || this.solariTiles.length === 0) return;
+
+    const minDelay = initial ? 12000 : 2000;
+    const maxDelay = initial ? 20000 : 3000;
+    const delay = minDelay + Math.floor(Math.random() * (maxDelay - minDelay));
+
+    this.queueSolariTimer(() => {
+      this.runSolariMisfire();
+      this.scheduleSolariMisfire();
+    }, delay);
+  }
+
+  private runSolariMisfire(): void {
+    const availableTiles = this.solariTiles.filter(tile => !tile.busy);
+    if (availableTiles.length === 0) return;
+
+    const tile = availableTiles[Math.floor(Math.random() * availableTiles.length)];
+    const tileIndex = this.solariTiles.indexOf(tile);
+    const target = this.getSolariWordSlots(this.solariTarget)[tileIndex];
+    const runId = this.solariRunId;
+    let incorrectFlipsRemaining = 1 + Math.floor(Math.random() * 3);
+
+    const flipAgain = (): void => {
+      if (runId !== this.solariRunId || this.isDestroyed || tile.busy) return;
+
+      if (incorrectFlipsRemaining === 0) {
+        this.flipSolariTile(tile, target, runId);
+        return;
+      }
+
+      const incorrectChars = Array.from(this.solariGlitchChars)
+        .filter(character => character !== target && character !== tile.current);
+      const randomChar = incorrectChars[Math.floor(Math.random() * incorrectChars.length)] ?? target;
+      this.flipSolariTile(tile, randomChar, runId);
+      incorrectFlipsRemaining -= 1;
+      this.queueSolariTimer(
+        flipAgain,
+        this.solariFlipTotal + 100 + Math.floor(Math.random() * 260)
+      );
+    };
+
+    flipAgain();
   }
 
   private getSolariWordSlots(word: string, placeholder = '.'): string[] {
